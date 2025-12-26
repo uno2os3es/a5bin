@@ -1,0 +1,41 @@
+#!/data/data/com.termux/files/usr/bin/env python3
+
+import regex as re
+import sys
+
+
+def clean_requirement(line: str) -> str:
+    """Remove version specifiers from a single requirement line."""
+    line = line.split('#')[0].strip()
+    if not line:
+        return ''
+
+    # Split on version operators (==, >=, <=, !=, ~=, <, >)
+    cleaned = re.split(r'[-<>=!~]+', line)[0].strip()
+    return cleaned
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print('Usage: python clean_requirements.py <requirements_file>')
+        sys.exit(1)
+
+    fname = sys.argv[1]
+
+    cleaned_lines = []
+
+    with open(fname) as f:
+        for line in f:
+            cleaned = clean_requirement(line)
+            if cleaned:
+                cleaned_lines.append(cleaned)
+
+    # Overwrite original file
+    with open(fname, 'w') as f:
+        f.write('\n'.join(cleaned_lines))
+
+    print(f'Cleaned and overwritten: {fname}')
+
+
+if __name__ == '__main__':
+    main()

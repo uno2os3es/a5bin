@@ -1,0 +1,58 @@
+#!/data/data/com.termux/files/usr/bin/env python3
+
+import os
+import sys
+from multiprocessing import Pool, cpu_count
+from pathlib import Path
+from time import perf_counter
+
+
+def remove_path(path: str) -> None:
+    """Remove a file or directory."""
+    p = Path(path)
+    try:
+        if p.is_file() and p.exists():
+            p.unlink()
+        elif p.is_dir() and p.exists():
+            shutil.rmtree(p)
+    except Exception:
+        pass
+
+
+def is_excluded(pt) -> bool:
+    """Check if path has any excluded parent directory."""
+    SYSTEMPYDIR = '/data/data/com.termux/files/usr/lib/python3.12'
+    EXCLUDED = [
+        '.git',
+        'pip',
+        'setuptools',
+        'wheel',
+        'cython',
+        'dh',
+        'packaging',
+    ]
+    for k in os.listdir(SYSTEMPYDIR):
+        full_pth = Path(os.path.join(SYSTEMPYDIR, k))
+        if full_pth.is_dir() and full_pth not in EXCLUDED:
+            EXCLUDED.append(full_pth)
+    return any(part in EXCLUDED for part in pt.parts)
+
+
+def main() -> None:
+    base_path = Path.cwd()
+    # Collect all .pyc files and __pycache__ directories
+    paths_to_remove = [p for p in base_path.rglob('*.pyc') if not is_excluded(p)]
+    paths_to_remove += [
+        d for d in base_path.rglob('__pycache__') if d.is_dir() and not is_excluded(d)
+    ]
+    if not paths_to_remove:
+        return
+    # Remove all paths in parallel
+    with Pool(cpu_count()) as pool:
+        pool.map(remove_path, map(str, paths_to_remove))
+
+
+if __name__ == '__main__':
+    start = perf_counter()
+    main()
+    total = perf_counter() - start

@@ -1,0 +1,243 @@
+#!/data/data/com.termux/files/usr/bin/env python3
+
+# file: pfd.py
+"""pfd — fd-like finder in Python with:
+- regex/glob search
+- excludes
+- type filter
+- extension filter
+- follow symlinks
+- exec {} support
+- parallel exec (-j N).
+"""
+
+from __future__ import annotations
+
+import argparse
+import fnmatch
+import multiprocessing
+import os
+import regex as re
+import shlex
+import subprocess
+import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+
+def compile_pattern(pattern: str, use_glob: bool, ignore_case: bool):
+    if use_glob:
+        rx = fnmatch.translate(pattern)
+        flags = re.IGNORECASE if ignore_case else 0
+        return re.compile(rx, flags)
+    flags = re.IGNORECASE if ignore_case else 0
+    return re.compile(pattern, flags)
+
+
+def path_matches_any(path: str, patterns: list[re.Pattern]) -> bool:
+    return any(p.search(path) for p in patterns)
+
+
+def name_matches_any(name: str, patterns: list[re.Pattern]) -> bool:
+    return any(p.search(name) for p in patterns)
+
+
+def walk_and_match(
+    roots: Iterable[str],
+    matcher: re.Pattern,
+    exclude_patterns: list[re.Pattern],
+    include_hidden: bool,
+    follow_symlinks: bool,
+    max_depth: int | None,
+    type_filter: str | None,
+    extensions: list[str],
+):
+    visited_inodes: set[tuple[int, int]] = set()
+    stack: list[tuple[str, int]] = [(r, 0) for r in roots]
+
+    while stack:
+        path, depth = stack.pop()
+        try:
+            try:
+                os.lstat(path)
+            except FileNotFoundError:
+                continue
+
+            is_dir = os.path.isdir(path)
+            if depth == 0 and not is_dir:
+                name = os.path.basename(path)
+                if not include_hidden and name.startswith('.'):
+                    continue
+                if exclude_patterns and path_matches_any(path, exclude_patterns):
+                    continue
+                if type_filter and type_filter != 'f':
+                    continue
+                if extensions and not any(name.lower().endswith(ext.lower()) for ext in extensions):
+                    continue
+                if matcher.search(name) or matcher.search(path):
+                    yield path
+                continue
+
+            with os.scandir(path) as it:
+                for entry in it:
+                    try:
+                        name = entry.name
+                        full = os.path.join(path, name)
+
+                        if not include_hidden and name.startswith('.'):
+                            continue
+                        if exclude_patterns and (
+                            path_matches_any(full, exclude_patterns)
+                            or name_matches_any(name, exclude_patterns)
+                        ):
+                            continue
+
+                        try:
+                            is_file = entry.is_file(follow_symlinks=follow_symlinks)
+                            is_dir_entry = entry.is_dir(follow_symlinks=follow_symlinks)
+                            is_link = entry.is_symlink()
+                        except OSError:
+                            is_file = False
+                            is_dir_entry = False
+                            is_link = entry.is_symlink()
+
+                        if type_filter == 'f' and not is_file:
+                            pass_type = False
+                        elif type_filter == 'd' and not is_dir_entry:
+                            pass_type = False
+                        elif type_filter == 'l' and not is_link:
+                            pass_type = False
+                        else:
+                            pass_type = True
+
+                        if extensions and not (
+                            is_file
+                            and any(name.lower().endswith(ext.lower()) for ext in extensions)
+                        ):
+                            pass_ext = False
+                        else:
+                            pass_ext = True
+
+                        matched = matcher.search(name) or matcher.search(full)
+
+                        if pass_type and pass_ext and matched:
+                            yield full
+
+                        should_descend = is_dir_entry
+                        if should_descend and max_depth is not None and depth >= max_depth:
+                            should_descend = False
+
+                        if should_descend and follow_symlinks:
+                            try:
+                                s = os.stat(full)
+                                inode = (s.st_dev, s.st_ino)
+                                if inode in visited_inodes:
+                                    should_descend = False
+                                else:
+                                    visited_inodes.add(inode)
+                            except OSError:
+                                should_descend = False
+
+                        if should_descend:
+                            stack.append((full, depth + 1))
+
+                    except PermissionError:
+                        continue
+
+        except PermissionError:
+            continue
+
+
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(prog='pfd')
+    p.add_argument('pattern', nargs='?', default='.*')
+    p.add_argument('paths', nargs='*', default=['.'])
+    p.add_argument('--glob', action='store_true')
+
+    p.add_argument('-i', '--ignore-case', action='store_true')
+    p.add_argument('-H', '--hidden', action='store_true')
+    p.add_argument('-L', '--follow', action='store_true')
+    p.add_argument('-d', '--max-depth', type=int)
+    p.add_argument('-t', '--type', choices=['f', 'd', 'l'])
+
+    p.add_argument('-e', '--extension', action='append', default=[])
+    p.add_argument('-E', '--exclude', action='append', default=[])
+    p.add_argument('-0', '--print0', action='store_true')
+
+    p.add_argument('-x', '--exec', help='Execute command for each match ({} = file)')
+    p.add_argument(
+        '-j',
+        '--jobs',
+        type=int,
+        default=multiprocessing.cpu_count(),
+        help='Number of parallel jobs (default: CPU cores)',
+    )
+
+    return p.parse_args(argv)
+
+
+def compile_excludes(excludes: list[str], ignore_case: bool):
+    out = []
+    for ex in excludes:
+        rx = fnmatch.translate(ex)
+        flags = re.IGNORECASE if ignore_case else 0
+        out.append(re.compile(rx, flags))
+    return out
+
+
+def run_exec(cmd_template: str, path: str) -> int:
+    cmd_str = cmd_template.replace('{}', path)
+    args = shlex.split(cmd_str)
+    try:
+        result = subprocess.run(args)
+        return result.returncode
+    except FileNotFoundError:
+        print(f'Command not found: {args[0]}', file=sys.stderr)
+        return 127
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    matcher = compile_pattern(args.pattern, args.glob, args.ignore_case)
+    excludes = compile_excludes(args.exclude, args.ignore_case)
+
+    matches = list(
+        walk_and_match(
+            roots=args.paths,
+            matcher=matcher,
+            exclude_patterns=excludes,
+            include_hidden=args.hidden,
+            follow_symlinks=args.follow,
+            max_depth=args.max_depth,
+            type_filter=args.type,
+            extensions=args.extension,
+        )
+    )
+
+    # -- EXEC MODE -----------------------------------------------------------
+    if args.exec:
+        with ThreadPoolExecutor(max_workers=args.jobs) as exe:
+            futs = {exe.submit(run_exec, args.exec, m): m for m in matches}
+            for fut in as_completed(futs):
+                rc = fut.result()
+                if rc != 0:
+                    return rc
+        return 0
+
+    # -- PRINT MODE ----------------------------------------------------------
+    sep = '\0' if args.print0 else '\n'
+    try:
+        for m in matches:
+            sys.stdout.write(m + sep)
+        sys.stdout.flush()
+    except BrokenPipeError:
+        pass
+
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -1,0 +1,139 @@
+#!/data/data/com.termux/files/usr/bin/env python3
+
+import sys
+from pathlib import Path
+
+# --- Configuration ---
+# The target directory for downloading wheels (resolves to /home/user/tmp/whl on Linux/macOS)
+TEMP_DOWNLOAD_DIR = Path.home() / 'tmp' / 'whl'
+# Base command for running pip
+PIP_COMMAND = [sys.executable, '-m', 'pip']
+# Flag to skip the pip update check (applied to all pip subcommands)
+PIP_DISABLE_CHECK = '--disable-pip-version-check'
+
+
+def get_installed_version(package_name):
+    """Checks if a package is installed and returns its version string.
+    Returns None if the package is not installed.
+    """
+    try:
+        # Run 'pip show' to get package metadata
+        result = subprocess.run(
+            [*PIP_COMMAND, 'show', PIP_DISABLE_CHECK, package_name],
+            capture_output=True,
+            text=True,
+            check=False,  # Prevents error if package is not found
+        )
+        if result.returncode != 0:
+            # Package not found or other error
+            return None
+        # Parse the output for 'Version:'
+        for line in result.stdout.splitlines():
+            if line.startswith('Version:'):
+                # Example: 'Version: 2.28.1' -> '2.28.1'
+                return line.split(':', 1)[1].strip()
+        return None
+    except Exception:
+        return None
+
+
+def parse_package_spec(specifier):
+    """Parses a package string (e.g., 'requests' or 'requests==2.28.1') into
+    (name, full_spec).
+    """
+    # Simple regex to find the package name before any specifier (==, >=, etc.)
+    # This handles packages that might contain hyphens.
+    match = re.match(r'^([^<=>~!]+)', specifier)
+    if match:
+        name = match.group(1).strip()
+        return name, specifier
+    # Fallback if no specifier is present
+    return specifier, specifier
+
+
+def run_custom_pip_install(package_specs) -> None:
+    """The main logic to check, download, and install packages."""
+    # Ensure the temporary download directory exists
+    try:
+        TEMP_DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        return
+    # Process each package specifier provided as argument
+    for spec in package_specs:
+        package_name, full_spec = parse_package_spec(spec)
+        installed_version = get_installed_version(package_name)
+        # --- 1. Check if package is already installed with the exact version ---
+        if installed_version:
+            # Check for exact version match (e.g., package==version)
+            if '==' in full_spec:
+                required_version = full_spec.split('==')[1].strip()
+                if installed_version == required_version:
+                    continue
+            # If no version spec or version doesn't match, proceed
+        # --- 2. Download the wheel file to the temporary directory ---
+        # The download command prefers binary (wheel) packages and targets our temp directory
+        download_command = PIP_COMMAND + [
+            'download',
+            PIP_DISABLE_CHECK,
+            '--only-binary',
+            ':all:',  # Prefer wheels over source distributions
+            '--dest',
+            str(TEMP_DOWNLOAD_DIR),
+            full_spec,
+        ]
+        try:
+            # We use check=True to raise an error if the download command fails
+            subprocess.run(
+                download_command,
+                check=True,
+                text=True,
+                stdout=sys.stdout,
+                stderr=sys.stderr,
+            )
+        except subprocess.CalledProcessError:
+            continue
+        except FileNotFoundError:
+            continue
+        # --- 3. Install from the downloaded wheel file ---
+        # Look for the downloaded wheel file. We replace hyphens with underscores
+        # because that's how pip names wheels.
+        search_pattern = f'{package_name.replace("-", "_")}*.whl'
+        wheel_files = list(TEMP_DOWNLOAD_DIR.glob(search_pattern))
+        if not wheel_files:
+            install_command = [
+                *PIP_COMMAND,
+                'install',
+                PIP_DISABLE_CHECK,
+                full_spec,
+            ]
+        else:
+            # We found the wheel, install it directly
+            wheel_path = wheel_files[0]
+            install_command = [
+                *PIP_COMMAND,
+                'install',
+                PIP_DISABLE_CHECK,
+                str(wheel_path),
+            ]
+        try:
+            # Run the installation
+            subprocess.run(
+                install_command,
+                check=True,
+                text=True,
+                stdout=sys.stdout,
+                stderr=sys.stderr,
+            )
+            # Clean up the downloaded wheel file after successful install
+            if wheel_files:
+                Path(wheel_path).unlink()
+        except subprocess.CalledProcessError:
+            pass
+
+
+if __name__ == '__main__':
+    # Skip the script name itself in the arguments list
+    if len(sys.argv) < 2:
+        sys.exit(1)
+    packages_to_install = sys.argv[1:]
+    run_custom_pip_install(packages_to_install)
