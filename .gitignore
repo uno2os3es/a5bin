@@ -1,3 +1,4 @@
+.pyformat.cache
 *.env
 .env
 __pycache__/
