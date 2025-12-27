@@ -1,10 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/python
 import os
-import rignore
-from pathlib import Path
-import regex as re
-from argostranslate import translate
 from multiprocessing import Pool, cpu_count
+from pathlib import Path
+
+import regex as re
+import rignore
+from argostranslate import translate
 from tqdm import tqdm
 
 DIRECTORY = '.'

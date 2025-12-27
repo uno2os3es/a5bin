@@ -7,11 +7,11 @@ Includes multiprocessing for faster extraction from multiple files.
 import argparse
 import json
 import logging
-import regex as re
 from dataclasses import dataclass
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
 
+import regex as re
 import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter

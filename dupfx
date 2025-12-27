@@ -1,9 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 import argparse
+import concurrent.futures as cf
 import os
 from collections import defaultdict
 from pathlib import Path
-import concurrent.futures as cf
 
 import xxhash
 from rich.progress import Progress

@@ -5,11 +5,11 @@ Equivalent of the bash version with the same workflow.
 """
 
 import os
-import sys
-import subprocess
 import shutil
-from pathlib import Path
+import subprocess
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Tuple
 
 

@@ -5,13 +5,14 @@ Fetch GitHub trending Python repositories (daily / weekly / monthly)
 and save results to CSV and JSON.
 """
 
-from dataclasses import dataclass, asdict
-from typing import List
-from pathlib import Path
-import requests
-from bs4 import BeautifulSoup
 import csv
 import json
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import List
+
+import requests
+from bs4 import BeautifulSoup
 
 BASE_URL = 'https://github.com/trending/python'
 TIMEFRAMES = ['daily', 'weekly', 'monthly']

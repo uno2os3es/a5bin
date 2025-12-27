@@ -12,7 +12,6 @@ RESET = '\033[0m'
 
 COMPRESSED_EXTS = {'.zip', '.tar', '.gz', '.bz2', '.xz', '.rar', '.7z'}
 
-
 def human_readable_size(size_bytes):
     """Convert bytes to KB/MB/GB with formatting."""
     if size_bytes < 1024:
@@ -23,7 +22,6 @@ def human_readable_size(size_bytes):
         return f'{size_bytes / 1024**2:.1f} MB'
     else:
         return f'{size_bytes / 1024**3:.1f} GB'
-
 
 def get_dir_size(path):
     """Recursively calculate directory size."""
@@ -38,9 +36,13 @@ def get_dir_size(path):
                 pass
     return total
 
-
 def list_dir(path='.'):
-    entries = os.listdir(path)  # includes hidden files by default
+    try:
+        entries = os.listdir(path)
+    except Exception as e:
+        print(f"Error accessing {path}: {e}")
+        return
+
     items = []
 
     for entry in entries:
@@ -55,7 +57,7 @@ def list_dir(path='.'):
                 ext = os.path.splitext(entry)[1].lower()
                 if ext in COMPRESSED_EXTS:
                     color = RED
-                elif mode & stat.S_IXUSR:  # executable
+                elif mode & stat.S_IXUSR:
                     color = GREEN
                 else:
                     color = CYAN
@@ -65,22 +67,23 @@ def list_dir(path='.'):
 
         items.append((size, entry, color))
 
-    # Determine column widths
-    size_col_width = max(len(human_readable_size(s)) for s, _, _ in items)
-    name_col_width = max(len(n) for _, n, _ in items)
+    # --- FIX: Added 'default' to handle empty lists ---
+    size_col_width = max((len(human_readable_size(s)) for s, _, _ in items), default=4)
+    name_col_width = max((len(n) for _, n, _ in items), default=4)
 
     # Print header
     print(f'{"size".ljust(size_col_width)}  {"name"}')
     print('-' * (size_col_width + name_col_width + 2))
 
-    # Sort by size ascending (biggest last)
+    if not items:
+        print("(directory is empty)")
+        return
+
+    # Sort by size ascending
     for size, name, color in sorted(items, key=lambda x: x[0]):
         size_str = human_readable_size(size).ljust(size_col_width)
         print(f'{size_str}  {color}{name}{RESET}')
 
-
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        list_dir(sys.argv[1])
-    else:
-        list_dir('.')
+    target = sys.argv[1] if len(sys.argv) > 1 else '.'
+    list_dir(target)

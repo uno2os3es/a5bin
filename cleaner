@@ -4,10 +4,11 @@ Terminal Session Cleaner
 Fast, correct, mmap-enabled for files >= 5MB
 """
 
-import sys
-import regex as re
 import mmap
+import sys
 from pathlib import Path
+
+import regex as re
 
 MMAP_THRESHOLD = 1024 * 1024  # 1 MB
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import os
-import sys
-import ssdeep
 import shutil
+import sys
 from collections import defaultdict
+
+import ssdeep
 
 
 def get_all_files(root='.'):

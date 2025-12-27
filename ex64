@@ -4,8 +4,9 @@
 import base64
 import hashlib
 import os
-import regex as re
 from pathlib import Path
+
+import regex as re
 
 # Regex to match any base64 image embedded in text files
 BASE64_IMG_REGEX = re.compile(

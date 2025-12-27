@@ -2,9 +2,10 @@
 
 
 import argparse
-import regex as re
 import shutil
 from pathlib import Path
+
+import regex as re
 
 # --- Regex Patterns ---
 PRINT_PATTERN = re.compile(

@@ -8,11 +8,12 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import os
-import regex as re
 import stat
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TYPE_CHECKING
+
+import regex as re
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

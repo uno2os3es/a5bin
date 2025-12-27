@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-import os
-import regex as re
 import argparse
-import zipfile
-import tarfile
 import io
+import os
 import sys
+import tarfile
 import tempfile
+import zipfile
 from time import perf_counter
+
+import regex as re
+
 try:
     import zstandard as zstd  # optional, for .tar.zst support
 except Exception:

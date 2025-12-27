@@ -5,14 +5,14 @@ Creates a new GitHub repo using gh CLI, auto-commits changes, and pushes to GitH
 Handles existing repos by offering merge or new repo creation options.
 """
 
-import os
-import sys
-import subprocess
-import json
-from pathlib import Path
-from datetime import datetime
-from typing import Optional, Tuple
 import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Optional, Tuple
 
 
 class GitHubRepoManager:   

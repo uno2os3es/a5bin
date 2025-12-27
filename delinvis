@@ -1,6 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/env python3
-import sys
 import os
+import sys
+
 
 def remove_unprintable_chars(input_file):
     # Create a backup file
@@ -34,7 +35,6 @@ if __name__ == '__main__':
 import os
 import shutil
 import string
-
 #!/usr/bin/env python3
 import sys
 

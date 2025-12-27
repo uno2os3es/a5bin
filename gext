@@ -3,7 +3,6 @@
 import ast
 import io
 import os
-import regex as re
 import shutil
 import tarfile
 import zipfile
@@ -11,6 +10,7 @@ from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
+import regex as re
 
 # --- Configuration ---
 OUTPUT_DIR = Path('output')

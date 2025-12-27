@@ -2,6 +2,7 @@
 """Remove author metadata header from python files (with or without extension)."""
 
 import os
+
 import rignore
 
 

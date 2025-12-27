@@ -2,8 +2,9 @@
 
 # file: replace_shebang_termux.py
 
-import regex as re
 from pathlib import Path
+
+import regex as re
 
 TERMUX_SHEBANG = '#!/data/data/com.termux/files/usr/bin/env python3'
 SHEBANG_RE = re.compile(r'^#!.*python[0-9.]*.*$')

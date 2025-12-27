@@ -1,10 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
 
-import regex as re
 import subprocess
 from pathlib import Path
 from typing import Iterable, List, Set
+
+import regex as re
 
 REQUIREMENTS_FILE = Path('requirements.txt')
 MISSING_PATTERN = re.compile(r'requires ([A-Za-z0-9_\-]+), which is not installed\.')

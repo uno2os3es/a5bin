@@ -1,14 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
-from termuxgui import (
-    Activity,
-    Button,
-    Connection,
-    EditText,
-    LinearLayout,
-    NestedScrollView,
-    TextView,
-)
+from termuxgui import (Activity, Button, Connection, EditText, LinearLayout,
+                       NestedScrollView, TextView)
 
 # Connect to termux-gui service
 conn = Connection()

@@ -26,12 +26,12 @@ import hashlib
 import json
 import multiprocessing as mp
 import os
-import regex as re
 import sys
 import tarfile
 import zipfile
 from pathlib import Path
 
+import regex as re
 from tqdm import tqdm
 
 # Default cache file (in project dir)

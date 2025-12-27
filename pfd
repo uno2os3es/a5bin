@@ -17,12 +17,13 @@ import argparse
 import fnmatch
 import multiprocessing
 import os
-import regex as re
 import shlex
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TYPE_CHECKING
+
+import regex as re
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -1,13 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/python
 
 import os
-import regex as re
+import random
 import sys
 import time
-import random
-from ascii_magic import AsciiArt
 from pathlib import Path
+
+import regex as re
 import rignore
+from ascii_magic import AsciiArt
 
 IMG_EXT = ['.jpg', '.png', '.jpeg']
 

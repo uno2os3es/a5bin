@@ -4,14 +4,15 @@ File Similarity Detector using ssdeep fuzzy hashing.
 Finds and groups similar files in a directory tree.
 """
 
-import os
-import sys
-import json
 import csv
+import json
+import os
 import shutil
-import ssdeep
-from pathlib import Path
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+
+import ssdeep
 from tqdm import tqdm
 
 

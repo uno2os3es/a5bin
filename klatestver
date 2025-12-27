@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
 import pathlib
-import regex as re
 
+import regex as re
 from packaging.version import Version
 
 # Regex to extract name and version from wheel filename

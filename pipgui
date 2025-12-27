@@ -4,15 +4,8 @@
 import subprocess
 import threading
 
-from termuxgui import (
-    Activity,
-    Button,
-    Connection,
-    EditText,
-    LinearLayout,
-    NestedScrollView,
-    TextView,
-)
+from termuxgui import (Activity, Button, Connection, EditText, LinearLayout,
+                       NestedScrollView, TextView)
 
 # Connect to termux-gui service
 conn = Connection()

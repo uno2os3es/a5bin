@@ -18,13 +18,14 @@ Behavior:
   - --restore copies stored files back to original locations and removes stored files and manifest.
 """
 
-from pathlib import Path
 import argparse
 import json
 import os
 import shutil
-import xxhash
 from collections import defaultdict
+from pathlib import Path
+
+import xxhash
 
 # Config
 CACHE_PATH = Path.home() / '.cache' / 'dups_xxhash_cache.json'

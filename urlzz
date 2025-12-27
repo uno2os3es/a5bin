@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 import os
-import regex
 import tarfile
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import regex as re
+
 # Regex pattern to match URLs
-url_pattern = regex.compile(r'https?://[^\s"\']+')
+url_pattern = re.compile(r'https?://[^\s"\']+')
 
 # Read allowed extensions from file
-with open('/sdcard/ext.txt', 'r', encoding='utf-8') as f:
+with open('/sdcard/ext', 'r', encoding='utf-8') as f:
     allowed_exts = set(line.strip().lower() for line in f if line.strip())
 
 # Helper function to extract URLs from text content

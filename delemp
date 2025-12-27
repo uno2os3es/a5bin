@@ -15,9 +15,9 @@ Features:
 
 import os
 import sys
-from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 MAX_WORKERS = os.cpu_count() or 4
 TEXT_CHUNK = 8192

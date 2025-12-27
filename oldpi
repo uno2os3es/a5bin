@@ -3,11 +3,11 @@
 import argparse
 import mmap
 import os
-import re
 import tokenize
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
+import regex as re
 from tqdm import tqdm
 
 SIZE_THRESHOLD = 1 * 1024 * 1024  # 1MB

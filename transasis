@@ -1,8 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/python
-import sys
-import rignore
 import os
+import sys
+
 import regex as re
+import rignore
 from deep_translator import GoogleTranslator
 
 # Directory containing your files

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import sys
-import regex as re
 import os
+import sys
+
+import regex as re
 
 
 def read_man_file(filename):

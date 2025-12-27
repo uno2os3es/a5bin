@@ -1,58 +1,77 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
 import os
-import sys
-from multiprocessing import Pool, cpu_count
+import shutil
 from pathlib import Path
-from time import perf_counter
+from concurrent.futures import ThreadPoolExecutor
 
+# Configuration
+EXCLUDE_DIRS = {'.git', 'pip', 'setuptools', 'wheel', 'cython', 'packaging'}
 
-def remove_path(path: str) -> None:
-    """Remove a file or directory."""
-    p = Path(path)
+def should_exclude(path: Path) -> bool:
+    """Check if the path is within an excluded directory."""
+    return any(part in EXCLUDE_DIRS for part in path.parts)
+
+def delete_item(path: Path):
+    """Worker function to delete a file or directory and return its stats."""
+    size_freed = 0
+    dir_count = 0
+    
     try:
-        if p.is_file() and p.exists():
-            p.unlink()
-        elif p.is_dir() and p.exists():
-            shutil.rmtree(p)
+        if path.is_file():
+            size_freed = path.stat().st_size
+            path.unlink()
+        elif path.is_dir():
+            # Sum size of all files inside before removing the dir
+            size_freed = sum(f.stat().st_size for f in path.rglob('*') if f.is_file())
+            shutil.rmtree(path)
+            dir_count = 1
     except Exception:
-        pass
+        return 0, 0
+        
+    return size_freed, dir_count
 
+def main():
+    root = Path.cwd()
+    targets = []
 
-def is_excluded(pt) -> bool:
-    """Check if path has any excluded parent directory."""
-    SYSTEMPYDIR = '/data/data/com.termux/files/usr/lib/python3.12'
-    EXCLUDED = [
-        '.git',
-        'pip',
-        'setuptools',
-        'wheel',
-        'cython',
-        'dh',
-        'packaging',
-    ]
-    for k in os.listdir(SYSTEMPYDIR):
-        full_pth = Path(os.path.join(SYSTEMPYDIR, k))
-        if full_pth.is_dir() and full_pth not in EXCLUDED:
-            EXCLUDED.append(full_pth)
-    return any(part in EXCLUDED for part in pt.parts)
+    # 1. Collect targets
+    # We collect .pyc files first, then __pycache__ folders
+    for p in root.rglob('*.pyc'):
+        if not should_exclude(p):
+            targets.append(p)
+            
+    for d in root.rglob('__pycache__'):
+        if d.is_dir() and not should_exclude(d):
+            targets.append(d)
 
-
-def main() -> None:
-    base_path = Path.cwd()
-    # Collect all .pyc files and __pycache__ directories
-    paths_to_remove = [p for p in base_path.rglob('*.pyc') if not is_excluded(p)]
-    paths_to_remove += [
-        d for d in base_path.rglob('__pycache__') if d.is_dir() and not is_excluded(d)
-    ]
-    if not paths_to_remove:
+    if not targets:
+        print("Everything is already clean.")
         return
-    # Remove all paths in parallel
-    with Pool(cpu_count()) as pool:
-        pool.map(remove_path, map(str, paths_to_remove))
 
+    total_size = 0
+    total_dirs = 0
 
-if __name__ == '__main__':
-    start = perf_counter()
+    # 2. Parallel Deletion
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(delete_item, targets)
+        
+        for size, d_count in results:
+            total_size += size
+            total_dirs += d_count
+
+    # 3. Report
+    print("--- Cleanup Report ---")
+    print(f"Total directories removed: {total_dirs}")
+    print(f"Total space reclaimed:     {format_size(total_size)}")
+
+def format_size(size_bytes):
+    """Helper to format bytes into a readable string."""
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_bytes < 1024:
+            return f"{size_bytes:.2f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.2f} TB"
+
+if __name__ == "__main__":
     main()
-    total = perf_counter() - start

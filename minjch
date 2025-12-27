@@ -7,8 +7,8 @@ Uses multiprocessing for speed.
 import json
 import multiprocessing
 import os
-import regex as re
 
+import regex as re
 from rcssmin import cssmin
 from rjsmin import jsmin
 

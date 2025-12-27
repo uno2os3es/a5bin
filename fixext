@@ -1,6 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
 import os
+
 import magic
 
 # Base MIME → extension mapping

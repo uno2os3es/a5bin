@@ -6,13 +6,14 @@ path: ./extract_urls.py
 from __future__ import annotations
 
 import os
-import regex as re
 import tarfile
-import zipfile
 import threading
-from urllib.parse import urlparse, urlunparse
+import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Iterable, Set, Dict
+from typing import Dict, Iterable, Set
+from urllib.parse import urlparse, urlunparse
+
+import regex as re
 
 try:
     import zstandard as zstd

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-import os
-import sys
-import stat
-import pwd
-import grp
 import argparse
 import datetime
+import grp
+import os
+import pwd
+import stat
+import sys
 from pathlib import Path
 from typing import List
 

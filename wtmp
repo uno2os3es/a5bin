@@ -4,11 +4,12 @@ import shutil
 import sys
 import time
 from pathlib import Path
+
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 DEST_DIR = os.path.expanduser('~/tmp/tgz')
-ALLOWED_EXTENSIONS = ('.tar.gz', '.whl', '.tar.xz', '.zip', '.tar.bz2','json')
+ALLOWED_EXTENSIONS = ('.tar.gz', '.whl', '.tar.xz', '.zip', '.tar.bz2')
 
 
 def copy_if_match(src_path) -> None:
@@ -16,12 +17,12 @@ def copy_if_match(src_path) -> None:
     if src_path.endswith(ALLOWED_EXTENSIONS):
         try:
             os.makedirs(DEST_DIR, exist_ok=True)
-            cont=Path(src_path).read_text()
+#            cont=Path(src_path).read_text()
             dest = os.path.join(DEST_DIR, os.path.basename(src_path))
-#            shutil.copy2(src_path, dest)
-            with open(dest,'a') as fo:
-                fo.write(str(cont))
-            print(f'{Path(dest).stat().st_size}')
+            shutil.copy2(src_path, dest)
+#            with open(dest,'a') as fo:
+#                fo.write(str(cont))
+#            print(f'{Path(dest).stat().st_size}')
             
 
         except Exception as e:

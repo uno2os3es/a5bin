@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/python
-import unicodedata
 import sys
+import unicodedata
 
 # Define a set of known invisible/formatting characters
 INVISIBLE_CHARS = {

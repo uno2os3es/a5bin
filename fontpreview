@@ -1,9 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
 import os
-from pathlib import Path
-import sys
 import pathlib
+import sys
+from pathlib import Path
+
 # File extensions to look for
 FONT_EXTENSIONS = ('.ttf', '.otf', '.woff', '.woff2')
 # Output HTML file
