@@ -20,7 +20,7 @@ def is_english(text):
 
 def chunk_text(text, size=800):
     """Split text into chunks of ~size characters."""
-    return [text[i : i + size] for i in range(0, len(text), size)]
+    return [text[i:i + size] for i in range(0, len(text), size)]
 
 
 def translate_chunk(chunk):
@@ -39,8 +39,9 @@ def translate_file_content(text):
 
     with Pool(cpu_count()) as pool:
         translated_chunks = list(
-            tqdm(pool.imap(translate_chunk, chunks), total=len(chunks), desc='Translating content')
-        )
+            tqdm(pool.imap(translate_chunk, chunks),
+                 total=len(chunks),
+                 desc='Translating content'))
 
     return ''.join(translated_chunks)
 
@@ -61,7 +62,9 @@ def process_files(directory):
 
     for fp in tqdm(text_files, desc='Scanning files'):
         # Only translate text-like files
-        if fp.suffix.lower() not in ['.txt', '.md', '.srt', '.py', '.json', '.html']:
+        if fp.suffix.lower() not in [
+                '.txt', '.md', '.srt', '.py', '.json', '.html'
+        ]:
             continue
         # Skip already translated files
         if fp.stem.endswith('_en'):

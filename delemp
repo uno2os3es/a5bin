@@ -25,6 +25,7 @@ EXCLUDED_DIRS = {'.git'}
 WHITELIST_FILE = Path('/sdcard/txt')
 BIN_EXT = Path('/sdcard/bin')
 
+
 def load_bin():
     if not BIN_EXT.exists():
         sys.exit('error : file not found')
@@ -35,6 +36,7 @@ def load_bin():
             continue
         exts.add(f".{line.lstrip('.')}")
     return exts
+
 
 def load_extension_whitelist() -> set[str]:
     if not WHITELIST_FILE.exists():
@@ -81,7 +83,8 @@ def clean_lines(lines: list[str], collapse: bool) -> tuple[list[str], int]:
     return cleaned, removed
 
 
-def clean_file(path: Path, whitelist: set[str], blacklist:set[str],collapse: bool) -> tuple[bool, int, str]:
+def clean_file(path: Path, whitelist: set[str], blacklist: set[str],
+               collapse: bool) -> tuple[bool, int, str]:
     if path.suffix.lower() in blacklist:
         return False, 0, ""
 
@@ -118,7 +121,7 @@ def iter_files(root: Path):
 def main() -> None:
     blacklist = load_bin()
     collapse = '--collapse' in sys.argv
-#    collapse = True
+    #    collapse = True
     whitelist = load_extension_whitelist()
     root = Path.cwd()
 
@@ -153,5 +156,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
-

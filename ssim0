@@ -58,7 +58,7 @@ def group_similar_files(hashes, threshold):
             continue
         group = [f1]
         visited.add(f1)
-        for f2 in files[i + 1 :]:
+        for f2 in files[i + 1:]:
             if f2 in visited:
                 continue
             score = ssdeep.compare(hashes[f1], hashes[f2])
@@ -95,7 +95,9 @@ def write_report(groups, format='csv', output_dir='output'):
         print(f'CSV report written to {report_file}')
     elif format == 'json':
         report_file = os.path.join(output_dir, 'similar_report.json')
-        data = {f'group_{idx}': group for idx, group in enumerate(groups, start=1)}
+        data = {
+            f'group_{idx}': group for idx, group in enumerate(groups, start=1)
+        }
         with open(report_file, 'w') as jf:
             json.dump(data, jf, indent=2)
         print(f'JSON report written to {report_file}')
@@ -119,7 +121,7 @@ def summarize_top_pairs(hashes, threshold, top_n=10):
     files = list(hashes.keys())
     pairs = []
     for i, f1 in enumerate(files):
-        for f2 in files[i + 1 :]:
+        for f2 in files[i + 1:]:
             score = ssdeep.compare(hashes[f1], hashes[f2])
             if score >= threshold:
                 pairs.append((f1, f2, score))
@@ -140,15 +142,22 @@ def export_top_pairs(pairs, format='csv', output_dir='output'):
         print(f'Top pairs CSV written to {report_file}')
     elif format == 'json':
         report_file = os.path.join(output_dir, 'top_pairs.json')
-        data = [{'file1': f1, 'file2': f2, 'score': score} for f1, f2, score in pairs]
+        data = [{
+            'file1': f1,
+            'file2': f2,
+            'score': score
+        } for f1, f2, score in pairs]
         with open(report_file, 'w') as jf:
             json.dump(data, jf, indent=2)
         print(f'Top pairs JSON written to {report_file}')
 
 
-def write_matrix(
-    hashes, threshold, output_dir='output', pretty=False, top_n=10, export_format=None
-):
+def write_matrix(hashes,
+                 threshold,
+                 output_dir='output',
+                 pretty=False,
+                 top_n=10,
+                 export_format=None):
     """Write pairwise similarity matrix, only showing scores >= threshold, with colors in console."""
     os.makedirs(output_dir, exist_ok=True)
     files = list(hashes.keys())
@@ -176,7 +185,9 @@ def write_matrix(
         if USE_TABULATE:
             colored_table = []
             for row in table[1:]:
-                colored_row = [row[0]] + [colorize_score(cell, threshold) for cell in row[1:]]
+                colored_row = [row[0]] + [
+                    colorize_score(cell, threshold) for cell in row[1:]
+                ]
                 colored_table.append(colored_row)
             print(tabulate(colored_table, headers=table[0], tablefmt='grid'))
         else:
@@ -184,7 +195,9 @@ def write_matrix(
             print(header)
             print('-' * len(header))
             for row in table[1:]:
-                formatted = [row[0]] + [colorize_score(cell, threshold) for cell in row[1:]]
+                formatted = [row[0]] + [
+                    colorize_score(cell, threshold) for cell in row[1:]
+                ]
                 print(' | '.join(str(x) if x != '' else '.' for x in formatted))
 
     # Print summary of top pairs
@@ -201,7 +214,9 @@ def write_matrix(
 
 def main():
     if len(sys.argv) < 2:
-        print(f'Usage: {sys.argv[0]} <threshold> [copy|csv|json|matrix] [topN] [exportFormat]')
+        print(
+            f'Usage: {sys.argv[0]} <threshold> [copy|csv|json|matrix] [topN] [exportFormat]'
+        )
         sys.exit(1)
 
     try:
@@ -232,7 +247,11 @@ def main():
             print(f'Found {len(groups)} groups of similar files.')
             write_report(groups, format=mode)
         elif mode == 'matrix':
-            write_matrix(hashes, threshold, pretty=True, top_n=top_n, export_format=export_format)
+            write_matrix(hashes,
+                         threshold,
+                         pretty=True,
+                         top_n=top_n,
+                         export_format=export_format)
         else:
             print("Unknown mode. Use 'copy', 'csv', 'json', or 'matrix'.")
 

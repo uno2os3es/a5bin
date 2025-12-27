@@ -1,6 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/env python3
-
-
 """File Renamer Tool (pnr.py)
 Renames files in current directory according to specified rules.
 """

@@ -12,6 +12,7 @@ RESET = '\033[0m'
 
 COMPRESSED_EXTS = {'.zip', '.tar', '.gz', '.bz2', '.xz', '.rar', '.7z'}
 
+
 def human_readable_size(size_bytes):
     """Convert bytes to KB/MB/GB with formatting."""
     if size_bytes < 1024:
@@ -22,6 +23,7 @@ def human_readable_size(size_bytes):
         return f'{size_bytes / 1024**2:.1f} MB'
     else:
         return f'{size_bytes / 1024**3:.1f} GB'
+
 
 def get_dir_size(path):
     """Recursively calculate directory size."""
@@ -35,6 +37,7 @@ def get_dir_size(path):
             except Exception:
                 pass
     return total
+
 
 def list_dir(path='.'):
     try:
@@ -68,7 +71,8 @@ def list_dir(path='.'):
         items.append((size, entry, color))
 
     # --- FIX: Added 'default' to handle empty lists ---
-    size_col_width = max((len(human_readable_size(s)) for s, _, _ in items), default=4)
+    size_col_width = max((len(human_readable_size(s)) for s, _, _ in items),
+                         default=4)
     name_col_width = max((len(n) for _, n, _ in items), default=4)
 
     # Print header
@@ -83,6 +87,7 @@ def list_dir(path='.'):
     for size, name, color in sorted(items, key=lambda x: x[0]):
         size_str = human_readable_size(size).ljust(size_col_width)
         print(f'{size_str}  {color}{name}{RESET}')
+
 
 if __name__ == '__main__':
     target = sys.argv[1] if len(sys.argv) > 1 else '.'

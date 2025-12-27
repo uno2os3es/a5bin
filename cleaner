@@ -12,7 +12,6 @@ import regex as re
 
 MMAP_THRESHOLD = 1024 * 1024  # 1 MB
 
-
 ANSI_RE = re.compile(
     rb"""
     \x1b\[[0-9;]*[A-Za-z] |

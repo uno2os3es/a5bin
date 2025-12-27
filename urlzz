@@ -13,9 +13,11 @@ url_pattern = re.compile(r'https?://[^\s"\']+')
 with open('/sdcard/ext', 'r', encoding='utf-8') as f:
     allowed_exts = set(line.strip().lower() for line in f if line.strip())
 
+
 # Helper function to extract URLs from text content
 def extract_urls_from_text(content):
     return set(url_pattern.findall(content))
+
 
 # Extract URLs from a regular file
 def extract_urls_from_file(filepath):
@@ -27,6 +29,7 @@ def extract_urls_from_file(filepath):
     except Exception as e:
         print(f"Failed to read {filepath}: {e}")
     return urls
+
 
 # Extract URLs from tar archives
 def extract_urls_from_tar(filepath):
@@ -47,6 +50,7 @@ def extract_urls_from_tar(filepath):
         print(f"Failed to read tar {filepath}: {e}")
     return urls
 
+
 # Extract URLs from zip/whl files
 def extract_urls_from_zip(filepath):
     urls = set()
@@ -62,6 +66,7 @@ def extract_urls_from_zip(filepath):
     except Exception as e:
         print(f"Failed to read zip {filepath}: {e}")
     return urls
+
 
 """
 # Extract URLs from 7z files
@@ -80,6 +85,8 @@ def extract_urls_from_7z(filepath):
         print(f"Failed to read 7z {filepath}: {e}")
     return urls
 """
+
+
 # Determine extraction method based on extension
 def extract_urls(filepath):
     ext = os.path.splitext(filepath)[1].lower()
@@ -87,11 +94,14 @@ def extract_urls(filepath):
         return extract_urls_from_file(filepath)
     elif ext in ['.zip', '.whl']:
         return extract_urls_from_zip(filepath)
-    elif ext.startswith('.tar') or ext in ['.tar.gz', '.tar.xz', '.tar.zst', '.tar.7z']:
+    elif ext.startswith('.tar') or ext in [
+            '.tar.gz', '.tar.xz', '.tar.zst', '.tar.7z'
+    ]:
         return extract_urls_from_tar(filepath)
 #    elif ext == '.7z':
 #        return extract_urls_from_7z(filepath)
     return set()
+
 
 # Gather all files recursively, skipping hidden dirs
 file_paths = []

@@ -20,22 +20,22 @@ INVISIBLE_CHARS = {
 
 def clean_text(text: str) -> str:
     """Remove invisible and formatting characters from text."""
-    cleaned=''
+    cleaned = ''
     for c in text:
         if ord(c) == 8204:
             continue
         if c == '\n':
-            cleaned+=c
+            cleaned += c
             continue
         if c in INVISIBLE_CHARS:
             continue
-        cleaned+=c
+        cleaned += c
     return cleaned
 
 
 def main():
     # Read file
-    with open(sys.argv[1], encoding='utf-8',errors='ignore') as f:
+    with open(sys.argv[1], encoding='utf-8', errors='ignore') as f:
         text = f.read()
 
     # Clean text

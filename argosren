@@ -54,8 +54,7 @@ def rename_files(directory):
                 pool.imap(translate_name, names_to_translate),
                 total=len(names_to_translate),
                 desc='Translating filenames',
-            )
-        )
+            ))
 
     # Map original → translated
     translation_map = dict(zip(names_to_translate, translated_names))

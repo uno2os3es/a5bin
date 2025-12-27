@@ -20,8 +20,7 @@ def find_fonts(root_dir='.'):
         fonts.extend(
             os.path.join(dirpath, filename)
             for filename in filenames
-            if filename.lower().endswith(FONT_EXTENSIONS)
-        )
+            if filename.lower().endswith(FONT_EXTENSIONS))
     return fonts
 
 
@@ -53,8 +52,7 @@ def generate_html(font_files):
         html.append('</style>')
         html.extend(
             f'<p style=\'font-family: "{font_name}"; font-size: {size}px;\'>The quick brown fox jumps over the lazy dog ({size}px)</p>'
-            for size in FONT_SIZES
-        )
+            for size in FONT_SIZES)
         html.append('</div>')
     html.append('</body></html>')
     return '\n'.join(html)

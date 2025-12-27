@@ -49,7 +49,8 @@ def wrap_line(line: str, width: int, break_at_spaces: bool, count_bytes: bool):
     return out
 
 
-def fold_stream_to_lines(stream, width: int, break_at_spaces: bool, count_bytes: bool):
+def fold_stream_to_lines(stream, width: int, break_at_spaces: bool,
+                         count_bytes: bool):
     """Return folded lines as a list of strings."""
     out = []
     for raw_line in stream:
@@ -59,7 +60,8 @@ def fold_stream_to_lines(stream, width: int, break_at_spaces: bool, count_bytes:
     return out
 
 
-def fold_stream_print(stream, width: int, break_at_spaces: bool, count_bytes: bool) -> None:
+def fold_stream_print(stream, width: int, break_at_spaces: bool,
+                      count_bytes: bool) -> None:
     """Print folded output to stdout."""
     for raw_line in stream:
         line = raw_line.rstrip('\n')
@@ -70,8 +72,8 @@ def fold_stream_print(stream, width: int, break_at_spaces: bool, count_bytes: bo
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description='Python implementation of GNU fold with auto mode as default.'
-    )
+        description=
+        'Python implementation of GNU fold with auto mode as default.')
     parser.add_argument('-w', '--width', type=int, default=80)
     parser.add_argument('-s', '--spaces', action='store_true')
     parser.add_argument('-b', '--bytes', action='store_true')
@@ -122,11 +124,14 @@ def main() -> None:
     # ----- WRITE MODE (in-place update) -----
     if args.write:
         if not args.files:
-            sys.exit('ERROR: --write requires at least one file (stdin not allowed).')
+            sys.exit(
+                'ERROR: --write requires at least one file (stdin not allowed).'
+            )
 
         for path in args.files:
             with open(path, encoding='utf-8', errors='replace') as f:
-                folded_lines = fold_stream_to_lines(f, args.width, args.spaces, args.bytes)
+                folded_lines = fold_stream_to_lines(f, args.width, args.spaces,
+                                                    args.bytes)
 
             # overwrite file in place (NO backup)
             with open(path, 'w', encoding='utf-8') as f:

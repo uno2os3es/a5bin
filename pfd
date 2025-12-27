@@ -72,11 +72,13 @@ def walk_and_match(
                 name = os.path.basename(path)
                 if not include_hidden and name.startswith('.'):
                     continue
-                if exclude_patterns and path_matches_any(path, exclude_patterns):
+                if exclude_patterns and path_matches_any(
+                        path, exclude_patterns):
                     continue
                 if type_filter and type_filter != 'f':
                     continue
-                if extensions and not any(name.lower().endswith(ext.lower()) for ext in extensions):
+                if extensions and not any(name.lower().endswith(ext.lower())
+                                          for ext in extensions):
                     continue
                 if matcher.search(name) or matcher.search(path):
                     yield path
@@ -91,14 +93,15 @@ def walk_and_match(
                         if not include_hidden and name.startswith('.'):
                             continue
                         if exclude_patterns and (
-                            path_matches_any(full, exclude_patterns)
-                            or name_matches_any(name, exclude_patterns)
-                        ):
+                                path_matches_any(full, exclude_patterns) or
+                                name_matches_any(name, exclude_patterns)):
                             continue
 
                         try:
-                            is_file = entry.is_file(follow_symlinks=follow_symlinks)
-                            is_dir_entry = entry.is_dir(follow_symlinks=follow_symlinks)
+                            is_file = entry.is_file(
+                                follow_symlinks=follow_symlinks)
+                            is_dir_entry = entry.is_dir(
+                                follow_symlinks=follow_symlinks)
                             is_link = entry.is_symlink()
                         except OSError:
                             is_file = False
@@ -114,10 +117,9 @@ def walk_and_match(
                         else:
                             pass_type = True
 
-                        if extensions and not (
-                            is_file
-                            and any(name.lower().endswith(ext.lower()) for ext in extensions)
-                        ):
+                        if extensions and not (is_file and any(
+                                name.lower().endswith(ext.lower())
+                                for ext in extensions)):
                             pass_ext = False
                         else:
                             pass_ext = True
@@ -168,7 +170,9 @@ def parse_args(argv=None):
     p.add_argument('-E', '--exclude', action='append', default=[])
     p.add_argument('-0', '--print0', action='store_true')
 
-    p.add_argument('-x', '--exec', help='Execute command for each match ({} = file)')
+    p.add_argument('-x',
+                   '--exec',
+                   help='Execute command for each match ({} = file)')
     p.add_argument(
         '-j',
         '--jobs',
@@ -215,8 +219,7 @@ def main(argv=None):
             max_depth=args.max_depth,
             type_filter=args.type,
             extensions=args.extension,
-        )
-    )
+        ))
 
     # -- EXEC MODE -----------------------------------------------------------
     if args.exec:

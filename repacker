@@ -31,7 +31,10 @@ def setup_logging() -> None:
 
 def get_dist_info_dirs():
     """Finds all .dist-info directories in the current location."""
-    return [d for d in Path('.').iterdir() if d.is_dir() and d.name.endswith('.dist-info')]
+    return [
+        d for d in Path('.').iterdir()
+        if d.is_dir() and d.name.endswith('.dist-info')
+    ]
 
 
 def resolve_sys_path(file_path_str, pkg_root_name):
@@ -137,7 +140,8 @@ def process_package(args) -> bool | None:
                     continue
 
                 # Calculate destination path
-                dest_rel_path, valid = resolve_sys_path(rel_path_str, pkg_base_name)
+                dest_rel_path, valid = resolve_sys_path(rel_path_str,
+                                                        pkg_base_name)
                 if not valid:
                     continue
 
@@ -179,7 +183,8 @@ def process_package(args) -> bool | None:
             final_target = get_unique_filename(WHL_DIR, generated_whl.name)
             shutil.copy2(str(generated_whl), str(final_target))
         else:
-            raise FileNotFoundError(f'Wheel pack ran but produced no .whl for {pkg_dname}')
+            raise FileNotFoundError(
+                f'Wheel pack ran but produced no .whl for {pkg_dname}')
 
         # Cleanup
         #        shutil.rmtree(temp_pkg_root)
@@ -195,8 +200,11 @@ def process_package(args) -> bool | None:
 
 def main() -> None:
     # Check environment
-    if Path('site-packages') not in Path.cwd().parents and Path.cwd().name != 'site-packages':
-        print('Warning: Current directory does not look like a site-packages folder.')
+    if Path('site-packages') not in Path.cwd().parents and Path.cwd(
+    ).name != 'site-packages':
+        print(
+            'Warning: Current directory does not look like a site-packages folder.'
+        )
         print(f'CWD: {os.getcwd()}')
         # Proceeding anyway as requested "assume we are in..."
 
@@ -238,7 +246,8 @@ def main() -> None:
                 processed_count += 1
 
             percent = (processed_count / total_pkgs) * 100
-            sys.stdout.write(f'\rCompleted: {percent:.1f}% ({processed_count}/{total_pkgs})')
+            sys.stdout.write(
+                f'\rCompleted: {percent:.1f}% ({processed_count}/{total_pkgs})')
             sys.stdout.flush()
             time.sleep(0.1)
 
@@ -254,7 +263,9 @@ if __name__ == '__main__':
     try:
         import wheel
     except ImportError:
-        print("Error: 'wheel' package is not installed. Please run: pip install wheel")
+        print(
+            "Error: 'wheel' package is not installed. Please run: pip install wheel"
+        )
         sys.exit(1)
 
     # Ensure multiprocessing works safely on Windows/macOS

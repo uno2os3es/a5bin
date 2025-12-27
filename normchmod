@@ -48,8 +48,6 @@ EXEC_EXTENSIONS = {'.sh'}
 EXCLUDED_DIRS = {'.git'}
 
 
-
-
 def is_executable_file(path: str) -> bool:
     """Decide if file should be executable, ignoring FORCE_NON_EXEC protections."""
     try:
@@ -131,13 +129,11 @@ def main() -> None:
 
     target = os.path.abspath(sys.argv[1])
 
-
     items = collect_paths(target)
 
     workers = max(1, cpu_count() - 1)
     with Pool(workers) as pool:
         pool.map(handle_item, items)
-
 
 
 if __name__ == '__main__':

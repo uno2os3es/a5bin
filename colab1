@@ -24,8 +24,10 @@ out_dir.mkdir(parents=True, exist_ok=True)
 # 4) Exclusions
 EXCLUDE_PREFIXES = ("setuptools", "pip")
 
+
 def excluded(name: str) -> bool:
     return name.startswith(EXCLUDE_PREFIXES)
+
 
 copied_files = 0
 zipped_dirs = 0

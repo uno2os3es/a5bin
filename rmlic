@@ -7,6 +7,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 EXCLUDE_DIRS = {'.git', '__pycache__'}
 EXCLUDED_EXT = {'.whl', '.zip', '.tar.gz', '.gz', '.tar.xz', '.7z'}
 
+
 def is_binary(path) -> bool:
     """Return True if file is binary by checking for null bytes."""
     try:
@@ -18,6 +19,7 @@ def is_binary(path) -> bool:
         return True
     return False
 
+
 def load_patterns_from_file(path='/sdcard/all.xtx'):
     """Reads patterns, filters length, and updates the file with unique entries."""
     if not os.path.exists(path):
@@ -28,7 +30,7 @@ def load_patterns_from_file(path='/sdcard/all.xtx'):
 
     # Split by triple newline as per original logic
     raw_groups = [block.strip() for block in content.split('\n\n\n')]
-    
+
     # Filter out empty or short patterns
     patterns = [g for g in raw_groups if g and len(g) >= 5]
     unique_patterns = list(set(patterns))
@@ -37,9 +39,12 @@ def load_patterns_from_file(path='/sdcard/all.xtx'):
     with open(path, 'w', encoding='utf-8') as fo:
         for gg in unique_patterns:
             fo.write(gg + '\n\n\n')
-            
-    print(f'Filtered out {len(raw_groups) - len(unique_patterns)} short or duplicate patterns')
+
+    print(
+        f'Filtered out {len(raw_groups) - len(unique_patterns)} short or duplicate patterns'
+    )
     return unique_patterns
+
 
 def process_file(path, patterns) -> str | None:
     """Worker function: Performs the string replacement."""
@@ -67,6 +72,7 @@ def process_file(path, patterns) -> str | None:
 
     return None
 
+
 def collect_files(root):
     """Collect text-like files to process in parallel."""
     files = []
@@ -83,6 +89,7 @@ def collect_files(root):
             files.append(full)
     return files
 
+
 def clean_dir_concurrent(root, patterns) -> None:
     files = collect_files(root)
     print(f'Found {len(files)} candidate files')
@@ -90,15 +97,19 @@ def clean_dir_concurrent(root, patterns) -> None:
     # Using ProcessPoolExecutor for CPU-bound string replacement tasks
     with ProcessPoolExecutor() as executor:
         # Map patterns to every file path for the worker
-        future_to_file = {executor.submit(process_file, f, patterns): f for f in files}
-        
+        future_to_file = {
+            executor.submit(process_file, f, patterns): f for f in files
+        }
+
         for future in as_completed(future_to_file):
             result = future.result()
             if result:
                 print(result)
 
+
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser(description='Remove strings from text files recursively (Concurrent)')
+    ap = argparse.ArgumentParser(
+        description='Remove strings from text files recursively (Concurrent)')
     ap.add_argument('--path', default='.', help='Directory to clean')
     ap.add_argument(
         '--file',

@@ -7,6 +7,7 @@ from pathlib import Path
 # Supported formats for OpenCV
 SUPPORTED_FORMATS = {'.png', '.bmp', '.tiff', '.webp', '.jpg', '.jpeg'}
 
+
 def extract_text(file_path: str) -> bool:
     """Extract text from an image using Tesseract and save to a .txt file."""
     path = Path(file_path)
@@ -20,7 +21,7 @@ def extract_text(file_path: str) -> bool:
     try:
         # Load image using OpenCV
         img = cv2.imread(str(path))
-        
+
         if img is None:
             print(f"Error: Could not read {path.name}")
             return False
@@ -38,7 +39,7 @@ def extract_text(file_path: str) -> bool:
         if not text.strip():
             print(f"Warning: No text detected in '{path.name}'.")
             # We still save an empty file or you can choose to return False here
-        
+
         # Save to text file
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(text)
@@ -50,6 +51,7 @@ def extract_text(file_path: str) -> bool:
         print(f"An error occurred: {e}")
         return False
 
+
 def main():
     if len(sys.argv) != 2:
         print(f'Usage: {sys.argv[0]} <image_file>')
@@ -59,6 +61,7 @@ def main():
         sys.exit(0)
     else:
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

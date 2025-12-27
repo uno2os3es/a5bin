@@ -20,8 +20,9 @@ try:
 except Exception:
     zstd = None
 
-
-URL_RE=re.compile(r"""(https?://[^\s<>"\']+|\bwww\.[^\s<>"\']+\b|\b[^\s<>"\']+\.(com|net|org)[^\s<>"\']*)""")
+URL_RE = re.compile(
+    r"""(https?://[^\s<>"\']+|\bwww\.[^\s<>"\']+\b|\b[^\s<>"\']+\.(com|net|org)[^\s<>"\']*)"""
+)
 
 GITHUB_RE = re.compile(r"(?i)github\.com")
 
@@ -48,9 +49,9 @@ def normalize_url(url: str) -> str:
         scheme = p.scheme.lower()
         netloc = p.netloc.lower()
 
-        if (scheme == "http" and netloc.endswith(":80")) or (
-            scheme == "https" and netloc.endswith(":443")
-        ):
+        if (scheme == "http" and
+                netloc.endswith(":80")) or (scheme == "https" and
+                                            netloc.endswith(":443")):
             netloc = netloc.rsplit(":", 1)[0]
 
         path = p.path.rstrip("/") or "/"
