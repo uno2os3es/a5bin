@@ -68,6 +68,7 @@ def main() -> None:
     original = read_file(path)
     cleaned = clean(original)
     path.write_bytes(cleaned)
+    print(f'{path.stem} cleaned.')
 
 
 if __name__ == '__main__':
