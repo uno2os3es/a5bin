@@ -1,41 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 import os
-import sys
-
-
-def remove_unprintable_chars(input_file):
-    # Create a backup file
-    backup_file = input_file + '.bak'
-    os.replace(input_file, backup_file)
-
-    # Read the backup file and filter unprintable characters
-    with open(backup_file, 'rb') as f_in, open(input_file, 'wb') as f_out:
-        for line in f_in:
-            # Decode as 'latin-1' to avoid UnicodeDecodeError,
-            # then filter out unprintable chars (except \n, \r, \t)
-            decoded_line = line.decode('latin-1')
-            filtered_line = ''.join(
-                char for char in decoded_line if char in ('\n', '\r', '\t') or char.isprintable()
-            )
-            f_out.write(filtered_line.encode('utf-8'))
-
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Usage: python script.py <input_file>')
-        sys.exit(1)
-
-    input_file = sys.argv[1]
-    if not os.path.exists(input_file):
-        print(f"Error: File '{input_file}' not found.")
-        sys.exit(1)
-
-    remove_unprintable_chars(input_file)
-    print(f"File '{input_file}' cleaned. Backup created as '{input_file}.bak'")
-import os
 import shutil
 import string
-#!/usr/bin/env python3
 import sys
 
 
