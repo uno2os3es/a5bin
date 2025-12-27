@@ -1,2 +1,2 @@
 #!/data/data/com.termux/files/usr/bin/bash
-fd - tf - tl | wc - l
+yapf -i -p -vv -r --style google .

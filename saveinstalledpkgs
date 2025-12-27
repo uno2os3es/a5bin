@@ -7,7 +7,6 @@ from pathlib import Path
 import subprocess
 import sys
 
-
 OUTPUT_FILE = Path('installed_debian_packages.txt')
 
 

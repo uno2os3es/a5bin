@@ -52,7 +52,7 @@ def is_constant_name(name: str) -> bool:
 
 
 def extract_from_file(
-    path: str,) -> Tuple[
+    path: str, ) -> Tuple[
         str,
         Dict[str, str],  # top-level classes
         Dict[str, str],  # top-level functions
@@ -101,8 +101,8 @@ def extract_from_file(
             if not isinstance(parent, ast.Module):
                 continue
 
-            if (isinstance(node, ast.Assign) and len(node.targets) == 1 and
-                    isinstance(node.targets[0], ast.Name)):
+            if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                    and isinstance(node.targets[0], ast.Name)):
                 name = node.targets[0].id
             elif isinstance(node, ast.AnnAssign) and isinstance(
                     node.target, ast.Name):

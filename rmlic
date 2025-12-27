@@ -98,7 +98,8 @@ def clean_dir_concurrent(root, patterns) -> None:
     with ProcessPoolExecutor() as executor:
         # Map patterns to every file path for the worker
         future_to_file = {
-            executor.submit(process_file, f, patterns): f for f in files
+            executor.submit(process_file, f, patterns): f
+            for f in files
         }
 
         for future in as_completed(future_to_file):

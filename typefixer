@@ -7,32 +7,21 @@ import magic
 # A robust mapping of common MIME types to their preferred file extensions.
 # This list can be expanded as needed.
 MIME_TO_EXT_MAP = {
-    'image/jpeg':
-        'jpg',
-    'image/png':
-        'png',
-    'image/gif':
-        'gif',
-    'image/webp':
-        'webp',
-    'application/pdf':
-        'pdf',
-    'application/zip':
-        'zip',
-    'application/x-tar':
-        'tar',
-    'video/mp4':
-        'mp4',
-    'audio/mpeg':
-        'mp3',
-    'text/plain':
-        'txt',
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/webp': 'webp',
+    'application/pdf': 'pdf',
+    'application/zip': 'zip',
+    'application/x-tar': 'tar',
+    'video/mp4': 'mp4',
+    'audio/mpeg': 'mp3',
+    'text/plain': 'txt',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        'docx',
+    'docx',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-        'xlsx',
-    'application/octet-stream':
-        None,  # Binary/unknown, skip renaming
+    'xlsx',
+    'application/octet-stream': None,  # Binary/unknown, skip renaming
 }
 
 

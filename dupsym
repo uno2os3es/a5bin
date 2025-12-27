@@ -196,8 +196,8 @@ def reverse_symlinks(backup_file=BACKUP_FILE):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Find duplicate files and replace with symlinks (reversible)'
-    )
+        description=
+        'Find duplicate files and replace with symlinks (reversible)')
     parser.add_argument('directory',
                         nargs='?',
                         default='.',

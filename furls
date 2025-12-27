@@ -148,8 +148,8 @@ def process_zipfile_zipped(zipf, max_bytes, exts, found, recursion_depth,
             process_bytes_as_archive(b, name, max_bytes, exts, found,
                                      recursion_depth + 1, max_recursion)
         else:
-            found.update(scan_bytes_for_urls(b, max_bytes, exts,
-                                             name_hint=name))
+            found.update(
+                scan_bytes_for_urls(b, max_bytes, exts, name_hint=name))
 
 
 def process_tarfile_obj(tarf, max_bytes, exts, found, recursion_depth,
@@ -171,8 +171,8 @@ def process_tarfile_obj(tarf, max_bytes, exts, found, recursion_depth,
             process_bytes_as_archive(b, name, max_bytes, exts, found,
                                      recursion_depth + 1, max_recursion)
         else:
-            found.update(scan_bytes_for_urls(b, max_bytes, exts,
-                                             name_hint=name))
+            found.update(
+                scan_bytes_for_urls(b, max_bytes, exts, name_hint=name))
 
 
 def process_bytes_as_archive(b,
@@ -324,8 +324,8 @@ def process_path(path, max_bytes, exts, found, recursion_limit=3):
         # Not a handled archive - treat as regular file
         with open(path, 'rb') as fh:
             b = fh.read(max_bytes + 1)
-            found.update(scan_bytes_for_urls(b, max_bytes, exts,
-                                             name_hint=path))
+            found.update(
+                scan_bytes_for_urls(b, max_bytes, exts, name_hint=path))
     except Exception:
         return
 
@@ -361,8 +361,10 @@ def main():
     args = parser.parse_args()
 
     max_bytes = int(args.max_mb * 1024 * 1024)
-    exts = {e.strip().lower() for e in args.extensions.split(',') if e.strip()
-           } if args.extensions else None
+    exts = {
+        e.strip().lower()
+        for e in args.extensions.split(',') if e.strip()
+    } if args.extensions else None
 
     found = set()
     # Walk filesystem

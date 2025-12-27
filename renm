@@ -47,7 +47,8 @@ def rename_files(directory):
 
     # Filter unique names needing translation to avoid redundant API calls
     unique_names_to_translate = list(
-        {p.name for p in paths if not is_english(p.name)})
+        {p.name
+         for p in paths if not is_english(p.name)})
 
     translation_map = {}
 

@@ -96,7 +96,8 @@ def write_report(groups, format='csv', output_dir='output'):
     elif format == 'json':
         report_file = os.path.join(output_dir, 'similar_report.json')
         data = {
-            f'group_{idx}': group for idx, group in enumerate(groups, start=1)
+            f'group_{idx}': group
+            for idx, group in enumerate(groups, start=1)
         }
         with open(report_file, 'w') as jf:
             json.dump(data, jf, indent=2)
@@ -198,7 +199,8 @@ def write_matrix(hashes,
                 formatted = [row[0]] + [
                     colorize_score(cell, threshold) for cell in row[1:]
                 ]
-                print(' | '.join(str(x) if x != '' else '.' for x in formatted))
+                print(' | '.join(
+                    str(x) if x != '' else '.' for x in formatted))
 
     # Print summary of top pairs
     top_pairs = summarize_top_pairs(hashes, threshold, top_n=top_n)

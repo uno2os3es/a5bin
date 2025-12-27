@@ -122,7 +122,8 @@ def translate_file(input_file, source_lang='auto'):
 
     # Check if chunking needed
     if content_length <= MAX_CHARS:
-        print(f'[INFO] Content fits in single request ({content_length} chars)')
+        print(
+            f'[INFO] Content fits in single request ({content_length} chars)')
         print(f'[INFO] Translating...')
         translated, detected_lang = translate_chunk(content, source_lang)
         print(f'[INFO] Detected language: {detected_lang}')
@@ -165,7 +166,8 @@ def translate_file(input_file, source_lang='auto'):
 def main():
     # Parse arguments
     if len(sys.argv) < 2:
-        print('Usage:  python translate_file.py <input_file> [source_language]')
+        print(
+            'Usage:  python translate_file.py <input_file> [source_language]')
         print('\nExamples:')
         print('  python translate_file.py document.txt')
         print('  python translate_file.py document. fa')

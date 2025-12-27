@@ -73,4 +73,5 @@ if __name__ == '__main__':
             print(
                 '\n✨ All PNG files processed successfully using Subprocess. ✨')
         except Exception as e:
-            print(f'\nAn unexpected error occurred during multiprocessing: {e}')
+            print(
+                f'\nAn unexpected error occurred during multiprocessing: {e}')

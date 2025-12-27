@@ -51,8 +51,8 @@ def find_imports(start_path):
     local_files = {p.stem for p in pathlib.Path(start_path).glob("*.py")}
 
     return sorted([
-        imp for imp in all_imports if imp not in std_libs and
-        imp not in local_files and imp != "__future__"
+        imp for imp in all_imports if imp not in std_libs
+        and imp not in local_files and imp != "__future__"
     ])
 
 

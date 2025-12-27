@@ -49,8 +49,8 @@ def find_distributions(site_dirs):
     dists = {}
     for sd in site_dirs:
         for p in sd.iterdir():
-            if p.is_dir() and (p.name.endswith('.dist-info') or
-                               p.name.endswith('.egg-info')):
+            if p.is_dir() and (p.name.endswith('.dist-info')
+                               or p.name.endswith('.egg-info')):
                 key = p.name.rsplit('.', 1)[0].lower()
                 dists[key] = p
     return dists
@@ -103,9 +103,8 @@ def read_record_list(distinfo_dir):
     ):
         if p.exists():
             return [
-                l.strip()
-                for l in p.read_text(encoding='utf-8',
-                                     errors='ignore').splitlines()
+                l.strip() for l in p.read_text(encoding='utf-8',
+                                               errors='ignore').splitlines()
                 if l.strip()
             ]
     tt = distinfo_dir / 'top_level.txt'
@@ -323,7 +322,8 @@ def main() -> None:
                 allxtx.append(cleaned)
 
     parser = argparse.ArgumentParser(
-        description='Repack installed packages into .whl files (Termux-aware).')
+        description='Repack installed packages into .whl files (Termux-aware).'
+    )
     parser.add_argument(
         'packages',
         nargs='*',
@@ -392,7 +392,8 @@ def main() -> None:
             else:
                 wheel_name = f'{dist_name.replace("-", "_")}-{version}-py3-none-any.whl'
             wheel_out = wheel_dir / wheel_name
-            build_wheel_from_tree(items, dist_name, version, workdir, wheel_out)
+            build_wheel_from_tree(items, dist_name, version, workdir,
+                                  wheel_out)
         except Exception:
             pass
 

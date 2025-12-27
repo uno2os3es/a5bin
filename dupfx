@@ -90,7 +90,8 @@ def hash_groups_in_parallel(groups):
 
         with cf.ProcessPoolExecutor() as executor:
             futures = {
-                executor.submit(hash_file, str(p)): p for p in candidates
+                executor.submit(hash_file, str(p)): p
+                for p in candidates
             }
             for future in cf.as_completed(futures):
                 path, h = future.result()

@@ -83,7 +83,8 @@ def main():
     try:
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             future_map = {
-                executor.submit(translate_word, w): w for w in to_translate
+                executor.submit(translate_word, w): w
+                for w in to_translate
             }
 
             for future in as_completed(future_map):
@@ -96,7 +97,8 @@ def main():
                             new_count += 1
                             print(f'{persian_word} → {english}')
                         else:
-                            print(f'[FAIL] Could not translate: {persian_word}')
+                            print(
+                                f'[FAIL] Could not translate: {persian_word}')
 
                         # Update progress bar and periodically save
                         pbar.update(1)
@@ -107,7 +109,8 @@ def main():
                             save_results_atomic(results, OUTPUT_FILE)
 
                 except Exception as e:
-                    print(f"[ERROR] Unexpected error for '{persian_word}': {e}")
+                    print(
+                        f"[ERROR] Unexpected error for '{persian_word}': {e}")
 
     except KeyboardInterrupt:
         print('\n[INFO] Interrupted by user. Saving progress...')

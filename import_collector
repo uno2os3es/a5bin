@@ -97,8 +97,8 @@ def main():
 
     # 4. Filtering & Mapping
     third_party = [
-        imp for imp in all_imports if imp not in std_libs and
-        imp not in local_names and imp != "__future__"
+        imp for imp in all_imports if imp not in std_libs
+        and imp not in local_names and imp != "__future__"
     ]
 
     missing_for_pip = []
@@ -114,7 +114,8 @@ def main():
 
     # 5. Output
     if third_party:
-        output_file.write_text("\n".join(sorted(third_party)), encoding="utf-8")
+        output_file.write_text("\n".join(sorted(third_party)),
+                               encoding="utf-8")
         print(f"✅ Found {len(third_party)} 3rd-party dependencies.")
 
         if already_installed:

@@ -36,7 +36,8 @@ def ensure_gitignore() -> None:
         print('Copying global .gitignore_global to local .gitignore...')
         shutil.copy(global_gitignore, repo_gitignore)
     else:
-        print('No local .gitignore and no ~/.gitignore_global found. Skipping.')
+        print(
+            'No local .gitignore and no ~/.gitignore_global found. Skipping.')
 
 
 def find_python_scripts_without_extension():

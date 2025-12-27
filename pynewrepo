@@ -82,7 +82,8 @@ class GitHubRepoManager:
 
     def _init_local_repo(self):
         """Initialize local git repository."""
-        print(f"\n📦 Initializing local git repository in {self.current_dir}...")
+        print(
+            f"\n📦 Initializing local git repository in {self.current_dir}...")
         returncode, stdout, stderr = self._run_command(["git", "init"],
                                                        capture_output=True)
         if returncode != 0 and "Reinitialized" not in stderr and "Initialized" not in stderr:

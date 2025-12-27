@@ -8,10 +8,10 @@ import regex as re
 
 # --- Regex Patterns ---
 PRINT_PATTERN = re.compile(r'^\s*print\s+(?!\()(.+)$'  # print <expr>
-                          )
+                           )
 
 PRINT_BARE_PATTERN = re.compile(r'^\s*print\s*$'  # bare: print
-                               )
+                                )
 
 EXCEPT_PATTERN = re.compile(
     r'^\s*except\s+(\S+)\s*,\s*(\S+)\s*:'  # except E, e:

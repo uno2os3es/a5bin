@@ -85,8 +85,8 @@ def collect_files(
             # prune ignored dirs and hidden dirs if needed
             dirnames[:] = [
                 d for d in dirnames
-                if (include_hidden or not d.startswith('.')) and
-                d not in IGNORED_DIRS and
+                if (include_hidden or not d.startswith('.'))
+                and d not in IGNORED_DIRS and
                 not matches_any_glob(os.path.join(dirpath, d), exclude_globs)
             ]
             for fn in filenames:
@@ -301,7 +301,10 @@ def main(argv: list[str] | None = None) -> int:
                             for s, e in sorted(spans,
                                                key=lambda x: x[0],
                                                reverse=True):
-                                out_line = colorize(out_line, s, e, enable=True)
+                                out_line = colorize(out_line,
+                                                    s,
+                                                    e,
+                                                    enable=True)
                         if args.line_number:
                             print(f'{path}:{lineno}:{out_line}')
                         else:

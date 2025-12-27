@@ -24,8 +24,8 @@ def convert_to_jpg(file_path: str) -> bool:
 
     # Ask before overwriting
     if output_path.exists():
-        response = input(
-            f"'{output_path.name}' exists. Overwrite? (y/n): ").strip().lower()
+        response = input(f"'{output_path.name}' exists. Overwrite? (y/n): "
+                         ).strip().lower()
         if response != 'y':
             return False
 

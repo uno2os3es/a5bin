@@ -14,7 +14,8 @@ def scan_directory(directory='.'):
                 'code': 0,
                 'comments': 0,
                 'blank': 0
-            } for lang in LANG_EXTENSIONS
+            }
+            for lang in LANG_EXTENSIONS
         },
     }
 

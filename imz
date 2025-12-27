@@ -156,18 +156,19 @@ def extract_from_ast(code: str,
         # dynamic import detection (__import__('pkg') or importlib.import_module('pkg'))
         elif isinstance(node, ast.Call):
             # __import__('pkg')
-            if isinstance(node.func, ast.Name) and node.func.id == '__import__':
-                if (node.args and isinstance(node.args[0], ast.Constant) and
-                        isinstance(node.args[0].value, str)):
+            if isinstance(node.func,
+                          ast.Name) and node.func.id == '__import__':
+                if (node.args and isinstance(node.args[0], ast.Constant)
+                        and isinstance(node.args[0].value, str)):
                     result['dynamic'].add(node.args[0].value.split('.', 1)[0])
             # importlib.import_module('pkg')
             elif isinstance(node.func, ast.Attribute):
                 val = node.func
-                if (isinstance(val.value, ast.Name) and
-                        val.value.id == 'importlib' and
-                        val.attr == 'import_module'):
-                    if (node.args and isinstance(node.args[0], ast.Constant) and
-                            isinstance(node.args[0].value, str)):
+                if (isinstance(val.value, ast.Name)
+                        and val.value.id == 'importlib'
+                        and val.attr == 'import_module'):
+                    if (node.args and isinstance(node.args[0], ast.Constant)
+                            and isinstance(node.args[0].value, str)):
                         result['dynamic'].add(node.args[0].value.split('.',
                                                                        1)[0])
 
@@ -180,7 +181,7 @@ def extract_from_ast(code: str,
 
 def process_py_file_content(code: str,
                             path_hint: str | None = None
-                           ) -> dict[str, list[str]]:
+                            ) -> dict[str, list[str]]:
     d = extract_from_ast(code, path_hint)
     return {k: sorted(v) for k, v in d.items()}
 
@@ -489,10 +490,10 @@ def scan_sources(ignore_dirs: set[str]) -> list[str]:
             fp = os.path.join(root, f)
             lower = f.lower()
             # include python sources, archives, notebooks, or no-extension scripts
-            if (lower.endswith('.py') or lower.endswith('.ipynb') or
-                    lower.endswith('.whl') or lower.endswith('.zip') or
-                    lower.endswith('.tar.gz') or lower.endswith('.tgz') or
-                    lower.endswith('.tar.xz') or Path(fp).suffix == ''):
+            if (lower.endswith('.py') or lower.endswith('.ipynb')
+                    or lower.endswith('.whl') or lower.endswith('.zip')
+                    or lower.endswith('.tar.gz') or lower.endswith('.tgz')
+                    or lower.endswith('.tar.xz') or Path(fp).suffix == ''):
                 out.append(fp)
     return out
 
@@ -502,7 +503,8 @@ def scan_sources(ignore_dirs: set[str]) -> list[str]:
 
 def main() -> None:
     p = argparse.ArgumentParser(
-        description='Offline requirements.txt generator (static + heuristics).')
+        description='Offline requirements.txt generator (static + heuristics).'
+    )
     p.add_argument(
         '--ignore',
         nargs='*',

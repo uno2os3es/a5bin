@@ -62,8 +62,8 @@ def find_distributions(site_dirs):
     }  # key: dist_name (normalized) -> path to dist-info or egg-info Path
     for sd in site_dirs:
         for p in sd.iterdir():
-            if p.is_dir() and (p.name.endswith('.dist-info') or
-                               p.name.endswith('.egg-info')):
+            if p.is_dir() and (p.name.endswith('.dist-info')
+                               or p.name.endswith('.egg-info')):
                 # distribution folder name: <name>-<version>.dist-info or <name>.egg-info or <name>-<version>.egg-info
                 key = p.name.rsplit('.')[0]  # remove suffix
                 # normalize key (lowercase) for matching
@@ -97,7 +97,8 @@ def parse_metadata_from_distinfo(distinfo_dir):
                 'console_scripts', ''):
             # configparser handling is messy because entry_points format is not a real INI always
             # We'll parse manually
-            lines = ep.read_text(encoding='utf-8', errors='ignore').splitlines()
+            lines = ep.read_text(encoding='utf-8',
+                                 errors='ignore').splitlines()
             section = None
             console = []
             for ln in lines:
@@ -130,9 +131,8 @@ def read_record_list(distinfo_dir):
     ]:
         if p.exists():
             installed = [
-                l.strip()
-                for l in p.read_text(encoding='utf-8',
-                                     errors='ignore').splitlines()
+                l.strip() for l in p.read_text(encoding='utf-8',
+                                               errors='ignore').splitlines()
                 if l.strip()
             ]
             return installed
@@ -246,9 +246,8 @@ def collect_files_for_dist(distinfo_path, site_dirs, prefix):
         added = set()
         if tl.exists():
             tops = [
-                l.strip()
-                for l in tl.read_text(encoding='utf-8',
-                                      errors='ignore').splitlines()
+                l.strip() for l in tl.read_text(encoding='utf-8',
+                                                errors='ignore').splitlines()
                 if l.strip()
             ]
             for name in tops:
@@ -368,7 +367,8 @@ def build_wheel_from_tree(tree_items, dist_name, version, workdir,
 # ---------- CLI ----------
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description='Repack installed packages into .whl files (Termux-aware).')
+        description='Repack installed packages into .whl files (Termux-aware).'
+    )
     parser.add_argument(
         'packages',
         nargs='*',

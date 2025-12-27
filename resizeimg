@@ -29,7 +29,9 @@ def reduce_image_size(image_path, scale_factor=0.75) -> None:
 
 def main() -> None:
     # Supported image formats
-    image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff', '*.webp']
+    image_extensions = [
+        '*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff', '*.webp'
+    ]
 
     # Get all image files in current directory
     image_files = []

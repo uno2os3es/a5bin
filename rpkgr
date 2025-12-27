@@ -75,7 +75,8 @@ def copy_scripts(pkg: str, dst: Path) -> None:
             shutil.copy2(script, dst / script.name)
 
 
-def build_wheel(pkg: str, version: str, tag: str, src_dir: Path, out_dir: Path):
+def build_wheel(pkg: str, version: str, tag: str, src_dir: Path,
+                out_dir: Path):
     wheel_name = f'{pkg}-{version}-{tag}.whl'
     wheel_path = out_dir / wheel_name
     with WheelFile(str(wheel_path), 'w') as wf:

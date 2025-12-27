@@ -171,7 +171,9 @@ class FileSimilarityDetector:
 
         print(f'CSV report saved to {output_file}')
 
-    def export_pairs_json(self, pairs, output_file='output/similar_pairs.json'):
+    def export_pairs_json(self,
+                          pairs,
+                          output_file='output/similar_pairs.json'):
         """Export similar pairs to JSON file."""
         output_path = Path(output_file)
         output_path.parent.mkdir(exist_ok=True)

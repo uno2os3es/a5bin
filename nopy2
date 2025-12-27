@@ -25,8 +25,8 @@ PREFIX = 'Tag: py2-none-any'
 def clean_text(text: str) -> str:
     """Remove PREFIX lines from raw text."""
     return '\n'.join(
-        line for line in text.splitlines() if not line.startswith(PREFIX)) + (
-            '\n' if text.endswith('\n') else '')
+        line for line in text.splitlines()
+        if not line.startswith(PREFIX)) + ('\n' if text.endswith('\n') else '')
 
 
 def clean_file(path: str) -> None:

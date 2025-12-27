@@ -64,7 +64,8 @@ def count_lines_of_code(file_path, lang):
         for line in file:
             if not line.strip():  # Blank line
                 blank_lines += 1
-            elif re.match(COMMENT_PATTERNS.get(lang, ''), line):  # Comment line
+            elif re.match(COMMENT_PATTERNS.get(lang, ''),
+                          line):  # Comment line
                 comment_lines += 1
             else:  # Code line
                 code_lines += 1
@@ -84,7 +85,8 @@ def scan_directory(directory='.'):
                 'code': 0,
                 'comments': 0,
                 'blank': 0
-            } for lang in LANG_EXTENSIONS
+            }
+            for lang in LANG_EXTENSIONS
         },
     }
 

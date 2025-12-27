@@ -41,10 +41,10 @@ def translate_text(text: str) -> str:
 
 def safe_overwrite(filepath: Path, content: str) -> None:
     with tempfile.NamedTemporaryFile(
-        mode='w',
-        encoding='utf-8',
-        delete=False,
-        dir=filepath.parent,
+            mode='w',
+            encoding='utf-8',
+            delete=False,
+            dir=filepath.parent,
     ) as tmp:
         tmp.write(content)
         tmp_path = Path(tmp.name)
@@ -53,11 +53,14 @@ def safe_overwrite(filepath: Path, content: str) -> None:
 
 # ---------- PYTHON-SAFE TRANSLATION ----------
 
+
 def extract_docstrings(tree: ast.AST) -> dict[int, str]:
     docstrings = {}
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if isinstance(
+                node,
+            (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             doc = ast.get_docstring(node, clean=False)
             if doc and not is_english(doc):
                 docstrings[id(node)] = doc
@@ -94,6 +97,7 @@ def translate_python_file(source: str) -> str:
 
 
 # ---------- FILE PROCESSING ----------
+
 
 def process_files(directory: str) -> None:
     paths = [Path(p) for p in rignore.walk(directory)]
