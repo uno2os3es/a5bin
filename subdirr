@@ -14,8 +14,7 @@ def main() -> None:
         if item.is_file():
             # Create a subdirectory based on the file name (without extension)
             target_dir = cwd / item.stem
-            target_dir = str(target_dir).replace('.body',
-                                                 '').replace('.tar', '')
+            target_dir = str(target_dir).replace('.body', '').replace('.tar', '')
             target_dir = target_dir[:10]
             tdir = Path(target_dir)
             if not tdir.exists():

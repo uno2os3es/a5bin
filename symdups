@@ -17,16 +17,12 @@ def find_duplicates(root_dir, skip_symlinks=True):
                 file_hashes[file_hash].append(file_path)
             else:
                 file_hashes[file_hash] = [file_path]
-    return {
-        hash_val: paths
-        for hash_val, paths in file_hashes.items() if len(paths) > 1
-    }
+    return {hash_val: paths for hash_val, paths in file_hashes.items() if len(paths) > 1}
 
 
 def backup_duplicates(duplicates, backup_dir):
     for hash_val, paths in duplicates.items():
-        backup_path = os.path.join(backup_dir,
-                                   f'{hash_val}_{os.path.basename(paths[0])}')
+        backup_path = os.path.join(backup_dir, f'{hash_val}_{os.path.basename(paths[0])}')
         shutil.copy2(paths[0], backup_path)
 
 
@@ -43,8 +39,7 @@ def reverse_symlinks(backup_dir):
         backup_file = os.path.join(backup_dir, file)
         if os.path.isfile(backup_file):
             hash_val, filename = file.rsplit('_', 1)
-            original_path = os.path.join(os.path.dirname(backup_file),
-                                         filename)
+            original_path = os.path.join(os.path.dirname(backup_file), filename)
             if os.path.islink(original_path):
                 os.remove(original_path)
                 shutil.move(backup_file, original_path)

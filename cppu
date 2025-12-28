@@ -34,8 +34,7 @@ def format_files_parallel(files):
     # Set up multiprocessing pool
     with mp.Pool(mp.cpu_count()) as pool:
         # Use tqdm for progress tracking
-        formatted_files = list(
-            tqdm(pool.imap(format_file, files), total=len(files), desc=''))
+        formatted_files = list(tqdm(pool.imap(format_file, files), total=len(files), desc=''))
     return formatted_files
 
 

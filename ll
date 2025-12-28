@@ -43,7 +43,7 @@ def list_dir(path='.'):
     try:
         entries = os.listdir(path)
     except Exception as e:
-        print(f"Error accessing {path}: {e}")
+        print(f'Error accessing {path}: {e}')
         return
 
     items = []
@@ -71,8 +71,7 @@ def list_dir(path='.'):
         items.append((size, entry, color))
 
     # --- FIX: Added 'default' to handle empty lists ---
-    size_col_width = max((len(human_readable_size(s)) for s, _, _ in items),
-                         default=4)
+    size_col_width = max((len(human_readable_size(s)) for s, _, _ in items), default=4)
     name_col_width = max((len(n) for _, n, _ in items), default=4)
 
     # Print header
@@ -80,7 +79,7 @@ def list_dir(path='.'):
     print('-' * (size_col_width + name_col_width + 2))
 
     if not items:
-        print("(directory is empty)")
+        print('(directory is empty)')
         return
 
     # Sort by size ascending

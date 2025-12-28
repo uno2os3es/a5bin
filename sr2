@@ -33,8 +33,7 @@ def find_distributions(site_dirs):
         if not sd.exists():
             continue
         for p in sd.iterdir():
-            if p.is_dir() and (p.name.endswith('.dist-info')
-                               or p.name.endswith('.egg-info')):
+            if p.is_dir() and (p.name.endswith('.dist-info') or p.name.endswith('.egg-info')):
                 key = p.name.rsplit('.', 1)[0].lower()
                 dists[key] = p
     return dists
@@ -105,8 +104,7 @@ def build_pure_wheel(distinfo_path, wheel_out_path):
     # build wheel
     dist_name = parse_metadata(distinfo_path).get('Name') or distinfo_path.stem
     version = parse_metadata(distinfo_path).get('Version') or '0'
-    distinfo_dir = next((f for f in files if f.name.endswith('.dist-info')),
-                        None)
+    distinfo_dir = next((f for f in files if f.name.endswith('.dist-info')), None)
     if not distinfo_dir:
         distinfo_dir = distinfo_path
 
@@ -114,8 +112,7 @@ def build_pure_wheel(distinfo_path, wheel_out_path):
     wheel_tag = 'py3-none-any'
 
     # write wheel
-    with zipfile.ZipFile(wheel_out_path, 'w',
-                         compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(wheel_out_path, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
         for f in files:
             if f.is_file():
                 zf.write(f, arcname=f.relative_to(base).as_posix())
@@ -125,27 +122,22 @@ Generator: repack_pure/1.0
 Root-Is-Purelib: true
 Tag: {wheel_tag}
 """
-        zf.writestr(f"{distinfo_dir.name}/WHEEL", wheel_file_content)
+        zf.writestr(f'{distinfo_dir.name}/WHEEL', wheel_file_content)
         # RECORD file
         record_lines = []
         for f in files:
             if f.is_file():
                 h, size = compute_hash_and_size(f)
-                record_lines.append(
-                    f"{f.relative_to(base).as_posix()},{h},{size}")
-        record_lines.append(f"{distinfo_dir.name}/RECORD,,")
-        zf.writestr(f"{distinfo_dir.name}/RECORD", '\n'.join(record_lines))
+                record_lines.append(f'{f.relative_to(base).as_posix()},{h},{size}')
+        record_lines.append(f'{distinfo_dir.name}/RECORD,,')
+        zf.writestr(f'{distinfo_dir.name}/RECORD', '\n'.join(record_lines))
 
 
 # ---------- CLI ----------
 def main():
-    parser = argparse.ArgumentParser(
-        description="Repack only pure Python packages as wheels")
-    parser.add_argument('-a',
-                        '--all',
-                        action='store_true',
-                        help="Repack all installed packages")
-    parser.add_argument('packages', nargs='*', help="Package names to repack")
+    parser = argparse.ArgumentParser(description='Repack only pure Python packages as wheels')
+    parser.add_argument('-a', '--all', action='store_true', help='Repack all installed packages')
+    parser.add_argument('packages', nargs='*', help='Package names to repack')
     args = parser.parse_args()
 
     prefix = prefix_path()
@@ -158,8 +150,7 @@ def main():
     else:
         for name in args.packages:
             key = name.lower()
-            found = next((p for k, p in dists.items() if k.startswith(key)),
-                         None)
+            found = next((p for k, p in dists.items() if k.startswith(key)), None)
             if found:
                 to_do.append(found)
 
@@ -170,7 +161,7 @@ def main():
         try:
             dist_name = parse_metadata(dist).get('Name') or dist.stem
             version = parse_metadata(dist).get('Version') or '0'
-            wheel_out = wheel_dir / f"{dist_name.replace('-', '_')}-{version}-py3-none-any.whl"
+            wheel_out = wheel_dir / f'{dist_name.replace("-", "_")}-{version}-py3-none-any.whl'
             build_pure_wheel(dist, wheel_out)
         except Exception:
             pass

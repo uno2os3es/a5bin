@@ -23,7 +23,7 @@ def extract_text(file_path: str) -> bool:
         img = cv2.imread(str(path))
 
         if img is None:
-            print(f"Error: Could not read {path.name}")
+            print(f'Error: Could not read {path.name}')
             return False
 
         # Preprocessing: Convert to Grayscale for better OCR accuracy
@@ -48,7 +48,7 @@ def extract_text(file_path: str) -> bool:
         return True
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f'An error occurred: {e}')
         return False
 
 

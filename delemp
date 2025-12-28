@@ -34,19 +34,19 @@ def load_bin():
         line = line.strip().lower()
         if not line or line.startswith('#'):
             continue
-        exts.add(f".{line.lstrip('.')}")
+        exts.add(f'.{line.lstrip(".")}')
     return exts
 
 
 def load_extension_whitelist() -> set[str]:
     if not WHITELIST_FILE.exists():
-        sys.exit("Error: text_based.txt not found")
+        sys.exit('Error: text_based.txt not found')
 
     exts = set()
     for line in WHITELIST_FILE.read_text().splitlines():
         line = line.strip().lower()
         if line and not line.startswith('#'):
-            exts.add(f".{line.lstrip('.')}")
+            exts.add(f'.{line.lstrip(".")}')
     return exts
 
 
@@ -83,16 +83,17 @@ def clean_lines(lines: list[str], collapse: bool) -> tuple[list[str], int]:
     return cleaned, removed
 
 
-def clean_file(path: Path, whitelist: set[str], blacklist: set[str],
-               collapse: bool) -> tuple[bool, int, str]:
+def clean_file(
+    path: Path, whitelist: set[str], blacklist: set[str], collapse: bool
+) -> tuple[bool, int, str]:
     if path.suffix.lower() in blacklist:
-        return False, 0, ""
+        return False, 0, ''
 
     if path.suffix.lower() not in whitelist:
-        return False, 0, ""
+        return False, 0, ''
 
     if not is_text_file(path):
-        return False, 0, ""
+        return False, 0, ''
 
     try:
         with open(path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -101,14 +102,14 @@ def clean_file(path: Path, whitelist: set[str], blacklist: set[str],
         cleaned, removed = clean_lines(lines, collapse)
 
         if removed == 0:
-            return False, 0, ""
+            return False, 0, ''
 
         with open(path, 'w', encoding='utf-8', errors='ignore') as f:
             f.writelines(cleaned)
 
         return True, removed, path.suffix.lower()
     except Exception:
-        return False, 0, ""
+        return False, 0, ''
 
 
 def iter_files(root: Path):
@@ -132,10 +133,7 @@ def main() -> None:
     files = list(iter_files(root))
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {
-            executor.submit(clean_file, f, whitelist, blacklist, collapse): f
-            for f in files
-        }
+        futures = {executor.submit(clean_file, f, whitelist, blacklist, collapse): f for f in files}
 
         for future in as_completed(futures):
             changed, removed, ext = future.result()
@@ -144,14 +142,14 @@ def main() -> None:
                 total_removed += removed
                 per_ext[ext] += removed
 
-    print("\n✓ done")
-    print(f"  files modified: {modified_files}")
-    print(f"  blank lines removed: {total_removed}")
+    print('\n✓ done')
+    print(f'  files modified: {modified_files}')
+    print(f'  blank lines removed: {total_removed}')
 
     if per_ext:
-        print("\n  per-extension:")
+        print('\n  per-extension:')
         for ext, count in sorted(per_ext.items()):
-            print(f"    {ext}: {count}")
+            print(f'    {ext}: {count}')
 
 
 if __name__ == '__main__':

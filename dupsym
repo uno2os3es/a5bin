@@ -63,13 +63,9 @@ def find_duplicates(directory='.'):
 
     # Second pass: check hash for files with same size
     hash_map = defaultdict(list)
-    potential_duplicates = [
-        files for files in size_map.values() if len(files) > 1
-    ]
+    potential_duplicates = [files for files in size_map.values() if len(files) > 1]
 
-    print(
-        f'Checking {sum(len(files) for files in potential_duplicates)} potential duplicates...'
-    )
+    print(f'Checking {sum(len(files) for files in potential_duplicates)} potential duplicates...')
 
     for files in potential_duplicates:
         for filepath in files:
@@ -113,12 +109,14 @@ def create_symlinks(duplicates, dry_run=False):
 
             if not dry_run:
                 # Backup original file info
-                backup_data['operations'].append({
-                    'symlink': duplicate_abs,
-                    'target': keeper_abs,
-                    'original_existed': True,
-                    'size': file_size,
-                })
+                backup_data['operations'].append(
+                    {
+                        'symlink': duplicate_abs,
+                        'target': keeper_abs,
+                        'original_existed': True,
+                        'size': file_size,
+                    }
+                )
 
                 try:
                     # Remove the duplicate
@@ -196,21 +194,20 @@ def reverse_symlinks(backup_file=BACKUP_FILE):
 
 def main():
     parser = argparse.ArgumentParser(
-        description=
-        'Find duplicate files and replace with symlinks (reversible)')
-    parser.add_argument('directory',
-                        nargs='?',
-                        default='.',
-                        help='Directory to scan (default: current directory)')
-    parser.add_argument('--dry-run',
-                        action='store_true',
-                        help='Show what would be done without making changes')
-    parser.add_argument('--reverse',
-                        action='store_true',
-                        help='Reverse previous symlinking operation')
-    parser.add_argument('--backup-file',
-                        default=BACKUP_FILE,
-                        help=f'Backup file path (default: {BACKUP_FILE})')
+        description='Find duplicate files and replace with symlinks (reversible)'
+    )
+    parser.add_argument(
+        'directory', nargs='?', default='.', help='Directory to scan (default: current directory)'
+    )
+    parser.add_argument(
+        '--dry-run', action='store_true', help='Show what would be done without making changes'
+    )
+    parser.add_argument(
+        '--reverse', action='store_true', help='Reverse previous symlinking operation'
+    )
+    parser.add_argument(
+        '--backup-file', default=BACKUP_FILE, help=f'Backup file path (default: {BACKUP_FILE})'
+    )
 
     args = parser.parse_args()
 
@@ -224,9 +221,7 @@ def main():
             return
 
         print(f'\nFound {len(duplicates)} groups of duplicates')
-        print(
-            f'Total duplicate files: {sum(len(files) - 1 for files in duplicates.values())}'
-        )
+        print(f'Total duplicate files: {sum(len(files) - 1 for files in duplicates.values())}')
 
         if args.dry_run:
             print('\n[DRY RUN MODE - No changes will be made]')

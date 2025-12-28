@@ -27,7 +27,7 @@ def extract_urls_from_file(filepath):
             content = f.read()
             urls.update(extract_urls_from_text(content))
     except Exception as e:
-        print(f"Failed to read {filepath}: {e}")
+        print(f'Failed to read {filepath}: {e}')
     return urls
 
 
@@ -47,7 +47,7 @@ def extract_urls_from_tar(filepath):
                         except:
                             pass
     except Exception as e:
-        print(f"Failed to read tar {filepath}: {e}")
+        print(f'Failed to read tar {filepath}: {e}')
     return urls
 
 
@@ -64,7 +64,7 @@ def extract_urls_from_zip(filepath):
                 except:
                     pass
     except Exception as e:
-        print(f"Failed to read zip {filepath}: {e}")
+        print(f'Failed to read zip {filepath}: {e}')
     return urls
 
 
@@ -94,12 +94,10 @@ def extract_urls(filepath):
         return extract_urls_from_file(filepath)
     elif ext in ['.zip', '.whl']:
         return extract_urls_from_zip(filepath)
-    elif ext.startswith('.tar') or ext in [
-            '.tar.gz', '.tar.xz', '.tar.zst', '.tar.7z'
-    ]:
+    elif ext.startswith('.tar') or ext in ['.tar.gz', '.tar.xz', '.tar.zst', '.tar.7z']:
         return extract_urls_from_tar(filepath)
-#    elif ext == '.7z':
-#        return extract_urls_from_7z(filepath)
+    #    elif ext == '.7z':
+    #        return extract_urls_from_7z(filepath)
     return set()
 
 
@@ -122,4 +120,4 @@ with open('urls.txt', 'w', encoding='utf-8') as f:
     for url in sorted(all_urls):
         f.write(url + '\n')
 
-print(f"Extracted {len(all_urls)} unique URLs to urls.txt")
+print(f'Extracted {len(all_urls)} unique URLs to urls.txt')
