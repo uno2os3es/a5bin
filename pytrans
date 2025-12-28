@@ -10,7 +10,7 @@ File translator script that:
 
 import json
 import os
-import re
+import regex as re
 import sys
 import time
 from pathlib import Path
