@@ -1,7 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 
-from termuxgui import (Activity, Button, Connection, EditText, LinearLayout,
-                       NestedScrollView, TextView)
+from termuxgui import (
+    Activity,
+    Button,
+    Connection,
+    EditText,
+    LinearLayout,
+    NestedScrollView,
+    TextView,
+)
 
 # Connect to termux-gui service
 conn = Connection()
@@ -55,7 +62,7 @@ def on_install_click(view) -> None:
     if not pkg:
         append_output('Enter a package name first.')
         return
-    threading.Thread(target=run_pip_install, args=(pkg, ), daemon=True).start()
+    threading.Thread(target=run_pip_install, args=(pkg,), daemon=True).start()
 
 
 install_btn.set_on_click(on_install_click)
