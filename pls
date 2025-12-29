@@ -7,7 +7,6 @@ import pwd
 import stat
 import sys
 from pathlib import Path
-from typing import List
 
 # =============================
 # ANSI COLORS
@@ -123,7 +122,8 @@ def scan_dir(path, args):
     if not args.a:
         if args.A:
             entries = [
-                e for e in entries if e.name not in ('.', '..') and not e.name.startswith('.')
+                e for e in entries
+                if e.name not in ('.', '..') and not e.name.startswith('.')
             ]
         else:
             entries = [e for e in entries if not e.name.startswith('.')]

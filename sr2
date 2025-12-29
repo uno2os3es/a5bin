@@ -6,10 +6,8 @@ import argparse
 import base64
 import hashlib
 import os
-import shutil
 import sys
 import zipfile
-from configparser import ConfigParser
 from email.parser import Parser
 from pathlib import Path
 
@@ -33,7 +31,8 @@ def find_distributions(site_dirs):
         if not sd.exists():
             continue
         for p in sd.iterdir():
-            if p.is_dir() and (p.name.endswith('.dist-info') or p.name.endswith('.egg-info')):
+            if p.is_dir() and (p.name.endswith('.dist-info')
+                               or p.name.endswith('.egg-info')):
                 key = p.name.rsplit('.', 1)[0].lower()
                 dists[key] = p
     return dists
@@ -102,9 +101,10 @@ def build_pure_wheel(distinfo_path, wheel_out_path):
         return  # skip non-pure packages
 
     # build wheel
-    dist_name = parse_metadata(distinfo_path).get('Name') or distinfo_path.stem
-    version = parse_metadata(distinfo_path).get('Version') or '0'
-    distinfo_dir = next((f for f in files if f.name.endswith('.dist-info')), None)
+    parse_metadata(distinfo_path).get('Name') or distinfo_path.stem
+    parse_metadata(distinfo_path).get('Version') or '0'
+    distinfo_dir = next((f for f in files if f.name.endswith('.dist-info')),
+                        None)
     if not distinfo_dir:
         distinfo_dir = distinfo_path
 
@@ -112,7 +112,8 @@ def build_pure_wheel(distinfo_path, wheel_out_path):
     wheel_tag = 'py3-none-any'
 
     # write wheel
-    with zipfile.ZipFile(wheel_out_path, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(wheel_out_path, 'w',
+                         compression=zipfile.ZIP_DEFLATED) as zf:
         for f in files:
             if f.is_file():
                 zf.write(f, arcname=f.relative_to(base).as_posix())
@@ -128,15 +129,20 @@ Tag: {wheel_tag}
         for f in files:
             if f.is_file():
                 h, size = compute_hash_and_size(f)
-                record_lines.append(f'{f.relative_to(base).as_posix()},{h},{size}')
+                record_lines.append(
+                    f'{f.relative_to(base).as_posix()},{h},{size}')
         record_lines.append(f'{distinfo_dir.name}/RECORD,,')
         zf.writestr(f'{distinfo_dir.name}/RECORD', '\n'.join(record_lines))
 
 
 # ---------- CLI ----------
 def main():
-    parser = argparse.ArgumentParser(description='Repack only pure Python packages as wheels')
-    parser.add_argument('-a', '--all', action='store_true', help='Repack all installed packages')
+    parser = argparse.ArgumentParser(
+        description='Repack only pure Python packages as wheels')
+    parser.add_argument('-a',
+                        '--all',
+                        action='store_true',
+                        help='Repack all installed packages')
     parser.add_argument('packages', nargs='*', help='Package names to repack')
     args = parser.parse_args()
 
@@ -150,7 +156,8 @@ def main():
     else:
         for name in args.packages:
             key = name.lower()
-            found = next((p for k, p in dists.items() if k.startswith(key)), None)
+            found = next((p for k, p in dists.items() if k.startswith(key)),
+                         None)
             if found:
                 to_do.append(found)
 

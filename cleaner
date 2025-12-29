@@ -21,8 +21,8 @@ ANSI_RE = re.compile(
     re.VERBOSE,
 )
 
-CONTROL_RE = re.compile(rb'[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]')
-MULTI_NL_RE = re.compile(rb'\n{3,}')
+CONTROL_RE = re.compile(rb"[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]")
+MULTI_NL_RE = re.compile(rb"\n{3,}")
 
 
 def remove_backspaces(data: bytes) -> bytes:
@@ -37,11 +37,11 @@ def remove_backspaces(data: bytes) -> bytes:
 
 
 def clean(data: bytes) -> bytes:
-    data = ANSI_RE.sub(b'', data)
-    data = data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
+    data = ANSI_RE.sub(b"", data)
+    data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
     data = remove_backspaces(data)
-    data = CONTROL_RE.sub(b'', data)
-    data = MULTI_NL_RE.sub(b'\n\n', data)
+    data = CONTROL_RE.sub(b"", data)
+    data = MULTI_NL_RE.sub(b"\n\n", data)
     return data
 
 
@@ -51,25 +51,25 @@ def read_file(path: Path) -> bytes:
     if size < MMAP_THRESHOLD:
         return path.read_bytes()
 
-    with open(path, 'rb') as f:
+    with open(path, "rb") as f:
         with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             return mm[:]
 
 
 def main() -> None:
     if len(sys.argv) < 2:
-        sys.exit('Usage: cleaner <file>')
+        sys.exit("Usage: cleaner <file>")
 
     path = Path(sys.argv[1])
 
     if not path.exists():
-        sys.exit(f'Error: file not found: {path}')
+        sys.exit(f"Error: file not found: {path}")
 
     original = read_file(path)
     cleaned = clean(original)
     path.write_bytes(cleaned)
-    print(f'{path.stem} cleaned.')
+    print(f"{path.stem} cleaned.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

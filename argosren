@@ -8,10 +8,10 @@ import rignore
 from argostranslate import translate
 from tqdm import tqdm
 
-DIRECTORY = '.'
+DIRECTORY = "."
 
 # Detect non‑ASCII characters
-non_english_pattern = re.compile(r'[^\x00-\x7F]')
+non_english_pattern = re.compile(r"[^\x00-\x7F]")
 
 
 def is_english(text):
@@ -33,7 +33,7 @@ def translate_name(name):
         return translation_cache[base] + ext
 
     try:
-        translated = translate.translate(base, 'auto', 'en')
+        translated = translate.translate(base, "auto", "en")
         translation_cache[base] = translated
         return translated + ext
     except Exception:
@@ -53,7 +53,7 @@ def rename_files(directory):
             tqdm(
                 pool.imap(translate_name, names_to_translate),
                 total=len(names_to_translate),
-                desc='Translating filenames',
+                desc="Translating filenames",
             )
         )
 
@@ -75,12 +75,12 @@ def rename_files(directory):
         counter = 1
         while new_fp.exists():
             base, ext = os.path.splitext(new_name)
-            new_fp = fp.with_name(f'{base}_{counter}{ext}')
+            new_fp = fp.with_name(f"{base}_{counter}{ext}")
             counter += 1
 
         os.rename(original_fp, new_fp)
-        print(f'Renamed: {original_fp.name} -> {new_fp.name}')
+        print(f"Renamed: {original_fp.name} -> {new_fp.name}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     rename_files(DIRECTORY)

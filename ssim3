@@ -9,14 +9,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import ssdeep
 
 try:
-    from tabulate import tabulate
+    pass
 
     USE_TABULATE = True
 except ImportError:
     USE_TABULATE = False
 
 try:
-    from colorama import Fore, Style, init
+    from colorama import init
 
     init(autoreset=True)
     USE_COLOR = True
@@ -77,8 +77,10 @@ def summarize_top_pairs(hashes, threshold, top_n=10):
     with ThreadPoolExecutor() as executor:
         futures = []
         for i, f1 in enumerate(files):
-            for f2 in files[i + 1 :]:
-                futures.append(executor.submit(compare_pair, f1, hashes[f1], f2, hashes[f2]))
+            for f2 in files[i + 1:]:
+                futures.append(
+                    executor.submit(compare_pair, f1, hashes[f1], f2,
+                                    hashes[f2]))
         for future in as_completed(futures):
             f1, f2, score = future.result()
             if score >= threshold:
@@ -100,7 +102,7 @@ def group_similar_files(hashes, threshold):
             continue
         group = [f1]
         visited.add(f1)
-        for f2 in files[i + 1 :]:
+        for f2 in files[i + 1:]:
             if f2 in visited:
                 continue
             score = ssdeep.compare(hashes[f1], hashes[f2])
@@ -139,7 +141,11 @@ def export_top_pairs(pairs, format='csv', output_dir='output'):
         print(f'Top pairs CSV written to {report_file}')
     elif format == 'json':
         report_file = os.path.join(output_dir, 'top_pairs.json')
-        data = [{'file1': f1, 'file2': f2, 'score': score} for f1, f2, score in pairs]
+        data = [{
+            'file1': f1,
+            'file2': f2,
+            'score': score
+        } for f1, f2, score in pairs]
         with open(report_file, 'w') as jf:
             json.dump(data, jf, indent=2)
         print(f'Top pairs JSON written to {report_file}')
@@ -150,7 +156,9 @@ def export_top_pairs(pairs, format='csv', output_dir='output'):
 # -------------------------------
 def main():
     if len(sys.argv) < 2:
-        print(f'Usage: {sys.argv[0]} <threshold> [copy|csv|json|matrix] [topN] [exportFormat]')
+        print(
+            f'Usage: {sys.argv[0]} <threshold> [copy|csv|json|matrix] [topN] [exportFormat]'
+        )
         sys.exit(1)
 
     try:
@@ -164,7 +172,9 @@ def main():
     export_format = sys.argv[4] if len(sys.argv) > 4 else None
 
     files = get_all_files('.')
-    print(f'Found {len(files)} files (excluding .git). Computing hashes in parallel...')
+    print(
+        f'Found {len(files)} files (excluding .git). Computing hashes in parallel...'
+    )
     hashes = compute_hashes(files)
 
     print('Comparing files...')
@@ -180,7 +190,8 @@ def main():
         elif mode in ('csv', 'json'):
             print(f'Found {len(groups)} groups of similar files.')
             # reuse previous report function
-            export_top_pairs(summarize_top_pairs(hashes, threshold, top_n), format=mode)
+            export_top_pairs(summarize_top_pairs(hashes, threshold, top_n),
+                             format=mode)
         elif mode == 'matrix':
             top_pairs = summarize_top_pairs(hashes, threshold, top_n)
             print(f'\nTop {top_n} similar pairs:')

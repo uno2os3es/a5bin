@@ -17,9 +17,12 @@ from tqdm import tqdm
 
 
 class FileSimilarityDetector:
+
     def __init__(self, root_dir='.', exclude_dirs=None):
         self.root_dir = Path(root_dir)
-        self.exclude_dirs = exclude_dirs or ['.git', '__pycache__', 'node_modules']
+        self.exclude_dirs = exclude_dirs or [
+            '.git', '__pycache__', 'node_modules'
+        ]
         self.file_hashes = {}
 
     def scan_files(self):
@@ -53,7 +56,9 @@ class FileSimilarityDetector:
         with ThreadPoolExecutor() as executor:
             futures = [executor.submit(self.calculate_hash, f) for f in files]
 
-            for future in tqdm(as_completed(futures), total=len(files), desc='Hashing'):
+            for future in tqdm(as_completed(futures),
+                               total=len(files),
+                               desc='Hashing'):
                 filepath, hash_value = future.result()
                 if hash_value:
                     self.file_hashes[filepath] = hash_value
@@ -66,7 +71,7 @@ class FileSimilarityDetector:
         try:
             score = ssdeep.compare(hash1, hash2)
             return file1, file2, score
-        except Exception as e:
+        except Exception:
             return file1, file2, 0
 
     def find_similar_pairs(self, threshold=50, top_n=None):
@@ -82,12 +87,14 @@ class FileSimilarityDetector:
             for i in range(len(files)):
                 for j in range(i + 1, len(files)):
                     f1, f2 = files[i], files[j]
-                    future = executor.submit(
-                        self.compare_files, f1, self.file_hashes[f1], f2, self.file_hashes[f2]
-                    )
+                    future = executor.submit(self.compare_files, f1,
+                                             self.file_hashes[f1], f2,
+                                             self.file_hashes[f2])
                     futures.append(future)
 
-            for future in tqdm(as_completed(futures), total=total_comparisons, desc='Comparing'):
+            for future in tqdm(as_completed(futures),
+                               total=total_comparisons,
+                               desc='Comparing'):
                 file1, file2, score = future.result()
                 if score >= threshold:
                     similar_pairs.append((file1, file2, score))
@@ -115,11 +122,12 @@ class FileSimilarityDetector:
             group = [file1]
             visited.add(file1)
 
-            for file2 in files[i + 1 :]:
+            for file2 in files[i + 1:]:
                 if file2 in visited:
                     continue
 
-                score = ssdeep.compare(self.file_hashes[file1], self.file_hashes[file2])
+                score = ssdeep.compare(self.file_hashes[file1],
+                                       self.file_hashes[file2])
                 if score >= threshold:
                     group.append(file2)
                     visited.add(file2)
@@ -163,15 +171,18 @@ class FileSimilarityDetector:
 
         print(f'CSV report saved to {output_file}')
 
-    def export_pairs_json(self, pairs, output_file='output/similar_pairs.json'):
+    def export_pairs_json(self,
+                          pairs,
+                          output_file='output/similar_pairs.json'):
         """Export similar pairs to JSON file."""
         output_path = Path(output_file)
         output_path.parent.mkdir(exist_ok=True)
 
-        data = [
-            {'file1': file1, 'file2': file2, 'similarity_score': score}
-            for file1, file2, score in pairs
-        ]
+        data = [{
+            'file1': file1,
+            'file2': file2,
+            'similarity_score': score
+        } for file1, file2, score in pairs]
 
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
@@ -188,7 +199,9 @@ class FileSimilarityDetector:
 
 def main():
     if len(sys.argv) < 2:
-        print('Usage: python script.py <threshold> [mode] [top_n] [export_format]')
+        print(
+            'Usage: python script.py <threshold> [mode] [top_n] [export_format]'
+        )
         print('\nModes:')
         print('  copy   - Group and copy similar files (default)')
         print('  csv    - Export top pairs to CSV')

@@ -9,7 +9,6 @@ Updates:
 import os
 import stat
 import sys
-from datetime import datetime
 from multiprocessing import Pool, cpu_count
 
 DIR_MODE = 0o755
