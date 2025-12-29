@@ -56,7 +56,7 @@ def main():
     errors = []
     # Using ThreadPoolExecutor as Prettier is an external CLI process
     with tqdm(total=len(files_to_format), desc="Beautifying", unit="file") as pbar:
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
             # Map the formatting function across all discovered files
             future_to_file = {
                 executor.submit(format_file, f): f for f in files_to_format

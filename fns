@@ -1,2 +1,0 @@
-fd -t f . -x file {} \
-  | rg 'ELF.*not stripped'
