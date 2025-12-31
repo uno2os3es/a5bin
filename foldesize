@@ -22,9 +22,8 @@ def create_size_folders(base_dir, target_count=100):
     folders = []
     size = 1000  # Start from 1k
     while len(folders) < target_count:
-        next_size = (
-            size * 2 if size < 100000 else size + 200000
-        )  # Exponential then linear growth
+        next_size = (size * 2 if size < 100000 else size + 200000
+                     )  # Exponential then linear growth
         folder_name = f"{size // 1000}k-{next_size // 1000}k"
         folders.append((size, next_size, folder_name))
         size = next_size

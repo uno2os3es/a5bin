@@ -35,12 +35,8 @@ def main() -> None:
             changed = stats.st_ctime
             accessed = stats.st_atime
 
-            if (
-                created >= cutoff
-                or modified >= cutoff
-                or changed >= cutoff
-                or accessed >= cutoff
-            ):
+            if (created >= cutoff or modified >= cutoff or changed >= cutoff
+                    or accessed >= cutoff):
                 print(path)
 
 

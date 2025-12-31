@@ -24,12 +24,12 @@ def detect_shebang(content: str) -> str | None:
         return None
 
     # Simple heuristics
-    if "import " in content or "def " in content or stripped.startswith("python"):
+    if "import " in content or "def " in content or stripped.startswith(
+            "python"):
         return TERMUX_PYTHON
 
     if stripped.startswith(
-        ("echo ", "cd ", "export ", "set ", "if ", "for ", "#!/bin/sh")
-    ):
+        ("echo ", "cd ", "export ", "set ", "if ", "for ", "#!/bin/sh")):
         return TERMUX_BASH
 
     return None

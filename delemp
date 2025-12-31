@@ -83,9 +83,8 @@ def clean_lines(lines: list[str], collapse: bool) -> tuple[list[str], int]:
     return cleaned, removed
 
 
-def clean_file(
-    path: Path, whitelist: set[str], blacklist: set[str], collapse: bool
-) -> tuple[bool, int, str]:
+def clean_file(path: Path, whitelist: set[str], blacklist: set[str],
+               collapse: bool) -> tuple[bool, int, str]:
     if path.suffix.lower() in blacklist:
         return False, 0, ""
 

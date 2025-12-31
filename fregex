@@ -6,6 +6,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm  # For a progress bar. Install it using `pip install tqdm`
 
+
 def extract_regex_patterns(file_path):
     """
     Extracts regex patterns from a Python file.
@@ -23,6 +24,7 @@ def extract_regex_patterns(file_path):
         pass  # Skip unreadable files
     return [match[2] for match in patterns]
 
+
 def process_file(file_path, output_dir):
     """
     Process a single file to extract regex, then save to a corresponding output file.
@@ -36,6 +38,7 @@ def process_file(file_path, output_dir):
             f.write("\n".join(patterns))
     return file_path, len(patterns)
 
+
 def find_regex_in_dir(start_dir, output_dir, max_workers=4):
     """
     Scans for all regex patterns in Python files in parallel using ThreadPoolExecutor.
@@ -44,8 +47,7 @@ def find_regex_in_dir(start_dir, output_dir, max_workers=4):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     files_to_process = [
-        os.path.join(root, fname)
-        for root, _, files in os.walk(start_dir)
+        os.path.join(root, fname) for root, _, files in os.walk(start_dir)
         for fname in files if fname.endswith('.py')
     ]
 
@@ -62,18 +64,21 @@ def find_regex_in_dir(start_dir, output_dir, max_workers=4):
         for future in as_completed(futures):
             _, regex_count = future.result()
             if regex_count:
-                print(f"Processed file '{futures[future]}' with {regex_count} regex patterns.")
+                print(
+                    f"Processed file '{futures[future]}' with {regex_count} regex patterns."
+                )
             processed_files += 1
             progress_bar.update(1)
 
     progress_bar.close()
     print(f"Scanning complete. Processed {total_files} files.")
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} <output_dir>")
         sys.exit(1)
-    
+
     output_directory = sys.argv[1]
     find_regex_in_dir(os.getcwd(), output_directory, max_workers=4)
     print(f"Regex extraction complete. Results saved in {output_directory}")
