@@ -1,6 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/env python3
-
-import pdfminer
+import pdfminer.six
 from pypdf import PdfReader, PdfWriter
 
 reader = PdfReader("py.pdf", strict=False)
